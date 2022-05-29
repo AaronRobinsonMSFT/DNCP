@@ -31,8 +31,11 @@ LPVOID PAL_CoTaskMemAlloc(SIZE_T cb)
         cb = ALIGN;
 
     // Align the allocation size.
-    cb = (cb + (ALIGN - 1)) & ~(ALIGN - 1);
-    return aligned_alloc(ALIGN, cb);
+    SIZE_T cb_safe = (cb + (ALIGN - 1)) & ~(ALIGN - 1);
+    if (cb_safe < cb) // Overflow
+        return NULL;
+
+    return aligned_alloc(ALIGN, cb_safe);
 }
 
 void PAL_CoTaskMemFree(LPVOID pv)

@@ -74,6 +74,12 @@ void test_memory()
         TEST_ASSERT(p != NULL);
         PAL_CoTaskMemFree(p);
     }
+    {
+        // Check overflow, let OS handle other out of memory values.
+        SIZE_T will_overflow = ~((SIZE_T)0) - 6;
+        p = PAL_CoTaskMemAlloc(will_overflow);
+        TEST_ASSERT(p == NULL);
+    }
 }
 
 void test_bstr()
