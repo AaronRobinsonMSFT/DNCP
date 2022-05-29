@@ -13,7 +13,9 @@ else()
         guids.c
         interfaces.c
         )
-    add_compile_definitions(DNCOMPAL_TYPEDEFS)
+    add_compile_definitions(
+        DNCOMPAL_TYPEDEFS
+        DNCOMPAL_WINHDRS)
 endif()
 
 set(HEADERS
@@ -28,4 +30,12 @@ add_library(dncompal
 set_target_properties(dncompal PROPERTIES PUBLIC_HEADER inc/dncompal.h)
 target_include_directories(dncompal PUBLIC ./inc)
 
-install(TARGETS dncompal)
+if(NOT WIN32)
+    # Marked private because consumption of the Windows' headers is
+    # a build implementation detail and shouldn't impose on the consumer
+    # of dncompal.
+    target_include_directories(dncompal PRIVATE ./inc/winhdrs)
+endif()
+
+# Chain in the Windows headers interface
+add_subdirectory(inc/winhdrs)

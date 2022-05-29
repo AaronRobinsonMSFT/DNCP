@@ -20,16 +20,29 @@
 // Typedefs typically provided by Windows' headers
 #ifdef DNCOMPAL_TYPEDEFS
     typedef void* LPVOID;
+    typedef void const* LPCVOID;
+    typedef uintptr_t UINT_PTR;
     typedef size_t SIZE_T;
 
-    typedef uint32_t UINT;
+    typedef uint8_t BYTE;
+    typedef uint16_t USHORT;
+    typedef int32_t UINT;
+    typedef int32_t LONG;
     typedef uint32_t ULONG;
+    typedef uint32_t ULONG32;
+    typedef uint32_t DWORD;
+    typedef uint64_t UINT64;
+    typedef uint64_t ULONG64;
+    typedef uint64_t ULONGLONG;
 
 #ifdef __cplusplus
     typedef char16_t WCHAR;
 #else
     typedef uint16_t WCHAR;
 #endif // __cplusplus
+
+    typedef WCHAR* LPWSTR;
+    typedef WCHAR const* LPCWSTR;
 
     typedef WCHAR OLECHAR;
     typedef OLECHAR* LPOLESTR;
@@ -45,14 +58,6 @@
     #define VARIANT_FALSE ((VARIANT_BOOL)0)
 
     typedef uint32_t HRESULT;
-    #define S_OK            ((HRESULT)0)
-    #define S_FALSE         ((HRESULT)1)
-    #define E_OUTOFMEMORY   ((HRESULT)0x8007000E)
-    #define E_INVALIDARG    ((HRESULT)0x80070057)
-
-    #define E_NOTIMPL       ((HRESULT)0x80004001)
-    #define E_NOINTERFACE   ((HRESULT)0x80004002)
-    #define CO_E_CLASSSTRING ((HRESULT)0x800401F3)
 
     typedef struct
     {
@@ -104,48 +109,67 @@ BOOL PAL_IsEqualGUID(GUID const*, GUID const*);
 int32_t PAL_StringFromGUID2(GUID const*, LPOLESTR, int32_t);
 HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
 
-// 00000000-0000-0000-C000-000000000046
-extern IID const IID_IUnknown;
-
-// 00000001-0000-0000-C000-000000000046
-extern IID const IID_IClassFactory;
-
 #ifdef __cplusplus
     }
 #endif // __cplusplus
 
 //
-// Interfaces
+// Windows headers
 //
 
-#if defined(__cplusplus) && defined(DNCOMPAL_INTERFACES)
+#ifdef DNCOMPAL_WINHDRS
+    #include <winerror.h>
+#endif
 
+#if defined(__cplusplus) && defined(DNCOMPAL_WINHDRS)
+
+    #define EXTERN_C extern "C"
+
+    using REFGUID = GUID const&;
+    using IID = GUID;
+    using REFIID = IID const&;
+    using CLSID = GUID;
+    using REFCLSID = CLSID const&;
+
+    #define EXTERN_GUID(itf,l1,s1,s2,c1,c2,c3,c4,c5,c6,c7,c8) \
+        EXTERN_C __declspec(selectany) IID const itf = {l1,s1,s2,{c1,c2,c3,c4,c5,c6,c7,c8}}
+
+    // sal
+    #define _In_
+    #define _Out_
+    #define _Out_opt_
+    #define _Out_writes_to_opt_(x,y)
+    #define _Out_writes_to_(x,y)
+    #define _COM_Outptr_
+    #define __RPC__deref_out_opt
+
+    // COM Interface definitions
+    #define __uuidof(type) IID_##type
+    #define interface struct
+    #define DECLSPEC_UUID(x)
+    #define DECLSPEC_NOVTABLE
+    #define MIDL_INTERFACE(x)                       struct DECLSPEC_UUID(x) DECLSPEC_NOVTABLE
+    #define DECLARE_INTERFACE_(iface, baseiface)    interface DECLSPEC_NOVTABLE iface : public baseiface
     #define STDMETHODCALLTYPE
-    #define __uuidof(x) IID_ ## x
+    #define STDMETHOD(method)       virtual HRESULT STDMETHODCALLTYPE method
+    #define STDMETHOD_(type,method) virtual type STDMETHODCALLTYPE method
 
-    using REFGUID = GUID const &;
-    using REFIID = IID const &;
+    #define UNALIGNED
+    #define PURE = 0
 
-    struct IUnknown
-    {
-        virtual HRESULT STDMETHODCALLTYPE QueryInterface(
-            REFIID riid,
-            void **ppvObject) = 0;
+    #include <unknwn.h>
 
-        virtual ULONG STDMETHODCALLTYPE AddRef() = 0;
+    // Unusable COM and RPC types
+    interface ITypeInfo;
+    interface IStream;
+    struct VARIANT;
+    interface IRpcChannelBuffer;
+    using RPC_IF_HANDLE = void*;
 
-        virtual ULONG STDMETHODCALLTYPE Release() = 0;
-    };
-
-    struct IClassFactory : public IUnknown
-    {
-        virtual HRESULT STDMETHODCALLTYPE CreateInstance(
-            IUnknown *pUnkOuter,
-            REFIID riid,
-            void **ppvObject) = 0;
-
-        virtual HRESULT STDMETHODCALLTYPE LockServer(
-            BOOL fLock) = 0;
-    };
+    // Unusable Win32 types
+    using LPDEBUG_EVENT = SIZE_T;
+    using LPSTARTUPINFOW = SIZE_T;
+    using LPPROCESS_INFORMATION = SIZE_T;
+    using LPSECURITY_ATTRIBUTES = SIZE_T;
 
 #endif // __cplusplus && DNCOMPAL_INTERFACES
