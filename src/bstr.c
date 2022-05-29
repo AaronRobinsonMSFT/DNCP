@@ -21,20 +21,26 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <assert.h>
 #include <dncompal.h>
 
 //
 // The BSTR is an allocation that is at least 6-bytes in size.
 // The layout of the type is a pointer preceeded by 4 bytes
-// that contain length of the length in bytes of the string contents.
-// For example, on a little endian platform a BSTR that is allocated
+// that contain length, in bytes, of the contents.
+// For example, on a little-endian platform a BSTR that is allocated
 // using LPOLESTR("a"), would be in memory as:
 //
 //  | 2 | 0 | 0 | 0 | 'a' | '\0' | '\0' | '\0' |
 //                  ^ Where the BSTR* would point.
 //
+// We do want to ensure we are 8-byte aligned. CoTaskMemAlloc
+// provides this guarantee, but with the offset of 4-bytes for
+// byte length this means our pointer will be observed to be only
+// 4-byte aligned. We compensate for this by allocating a pointer
+// size of extra memory for the embedded byte size.
 
-#define BSTR_MIN_ALLOC (sizeof(UINT) + sizeof(WCHAR))
+#define BSTR_MIN_ALLOC (sizeof(SIZE_T) + sizeof(OLECHAR))
 
 static bool ComputeAllocSize(SIZE_T elemCount, SIZE_T elemSize, SIZE_T* bytesToAlloc)
 {
@@ -51,6 +57,30 @@ static bool ComputeAllocSize(SIZE_T elemCount, SIZE_T elemSize, SIZE_T* bytesToA
 
     *bytesToAlloc = alloc;
     return true;
+}
+
+static void* AllocAlignedBstr(SIZE_T byteAlloc)
+{
+    char* alloc = (char*)PAL_CoTaskMemAlloc(byteAlloc);
+    if (alloc == NULL)
+        return NULL;
+
+    if (sizeof(SIZE_T) == 8)
+    {
+        *(UINT*)alloc = 0;
+        alloc = alloc + 4;
+    }
+
+    return alloc;
+}
+
+static void FreeAlignedBstr(void* alloc)
+{
+    assert(alloc != NULL);
+    if (sizeof(SIZE_T) == 8)
+        alloc = (char*)alloc - 4;
+
+    PAL_CoTaskMemFree(alloc);
 }
 
 static UINT OLEStrLen(LPCOLESTR str)
@@ -76,7 +106,7 @@ BSTR PAL_SysAllocStringLen(LPCOLESTR str, UINT len)
     if (!ComputeAllocSize(len, sizeof(str[0]), &byteAlloc))
         return NULL;
 
-    bstr = (LPOLESTR)PAL_CoTaskMemAlloc(byteAlloc);
+    bstr = (LPOLESTR)AllocAlignedBstr(byteAlloc);
     if (bstr == NULL)
         return NULL;
 
@@ -100,7 +130,7 @@ BSTR PAL_SysAllocStringByteLen(char const* str, UINT len)
     if (!ComputeAllocSize(len, sizeof(str[0]), &byteAlloc))
         return NULL;
 
-    bstr = (LPOLESTR)PAL_CoTaskMemAlloc(byteAlloc);
+    bstr = (LPOLESTR)AllocAlignedBstr(byteAlloc);
     if (bstr == NULL)
         return NULL;
 
@@ -114,8 +144,8 @@ BSTR PAL_SysAllocStringByteLen(char const* str, UINT len)
         memcpy(bstr, str, len * sizeof(str[0]));
 
     //Ensure null termination for the single byte type.
-    *((char *)bstr + len) = '\0';
-    *(WCHAR *)((char *)bstr + ((len + 1) & ~1)) = W('\0');
+    *((char*)bstr + len) = '\0';
+    *(OLECHAR*)((char*)bstr + ((len + 1) & ~1)) = W('\0');
     return bstr;
 }
 
@@ -124,7 +154,7 @@ void PAL_SysFreeString(BSTR str)
     if (str == NULL)
       return;
 
-    PAL_CoTaskMemFree((char*)str - sizeof(UINT));
+    FreeAlignedBstr((char*)str - sizeof(UINT));
 }
 
 UINT PAL_SysStringLen(BSTR str)
@@ -132,7 +162,7 @@ UINT PAL_SysStringLen(BSTR str)
     if(str == NULL)
       return 0;
 
-    return (UINT)(((UINT*)str)[-1]) / sizeof(str[0]);
+    return (UINT)(((UINT*)str)[-1]) / sizeof(OLECHAR);
 }
 
 UINT PAL_SysStringByteLen(BSTR str)

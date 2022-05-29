@@ -28,7 +28,7 @@
     typedef WCHAR OLECHAR;
     typedef OLECHAR* LPOLESTR;
     typedef OLECHAR const* LPCOLESTR;
-    typedef WCHAR* BSTR;
+    typedef OLECHAR* BSTR;
 
     typedef int16_t VARIANT_BOOL;
     #define VARIANT_TRUE ((VARIANT_BOOL)-1)
@@ -77,7 +77,7 @@ UINT PAL_SysStringLen(BSTR);
 UINT PAL_SysStringByteLen(BSTR);
 
 //
-// GUID
+// GUIDs
 //
 
 int32_t PAL_IsEqualGUID(GUID const*, GUID const*);

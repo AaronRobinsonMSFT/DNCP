@@ -21,12 +21,18 @@
 #include <stdlib.h>
 #include <dncompal.h>
 
+// CoTaskMemAlloc always aligns on an 8-byte boundary.
+#define ALIGN 8
+
 LPVOID PAL_CoTaskMemAlloc(SIZE_T cb)
 {
-    // Ensure malloc always allocates
+    // Ensure malloc always allocates.
     if (cb == 0)
-        cb = 1;
-    return malloc(cb);
+        cb = ALIGN;
+
+    // Align the allocation size.
+    cb = (cb + (ALIGN - 1)) & ~(ALIGN - 1);
+    return aligned_alloc(ALIGN, cb);
 }
 
 void PAL_CoTaskMemFree(LPVOID pv)
