@@ -23,12 +23,22 @@
     typedef size_t SIZE_T;
 
     typedef uint32_t UINT;
+    typedef uint32_t ULONG;
 
+#ifdef __cplusplus
+    typedef char16_t WCHAR;
+#else
     typedef uint16_t WCHAR;
+#endif // __cplusplus
+
     typedef WCHAR OLECHAR;
     typedef OLECHAR* LPOLESTR;
     typedef OLECHAR const* LPCOLESTR;
     typedef OLECHAR* BSTR;
+
+    typedef int32_t BOOL;
+    #define TRUE ((BOOL)1)
+    #define FALSE ((BOOL)0)
 
     typedef int16_t VARIANT_BOOL;
     #define VARIANT_TRUE ((VARIANT_BOOL)-1)
@@ -36,8 +46,12 @@
 
     typedef uint32_t HRESULT;
     #define S_OK            ((HRESULT)0)
+    #define S_FALSE         ((HRESULT)1)
     #define E_OUTOFMEMORY   ((HRESULT)0x8007000E)
     #define E_INVALIDARG    ((HRESULT)0x80070057)
+
+    #define E_NOTIMPL       ((HRESULT)0x80004001)
+    #define E_NOINTERFACE   ((HRESULT)0x80004002)
     #define CO_E_CLASSSTRING ((HRESULT)0x800401F3)
 
     typedef struct
@@ -50,6 +64,11 @@
 
     typedef GUID IID;
 #endif // DNCOMPAL_TYPEDEFS
+
+#ifdef __cplusplus
+    extern "C"
+    {
+#endif // __cplusplus
 
 //
 // Memory allocators
@@ -80,7 +99,53 @@ UINT PAL_SysStringByteLen(BSTR);
 // GUIDs
 //
 
-int32_t PAL_IsEqualGUID(GUID const*, GUID const*);
+BOOL PAL_IsEqualGUID(GUID const*, GUID const*);
 
 int32_t PAL_StringFromGUID2(GUID const*, LPOLESTR, int32_t);
 HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
+
+// 00000000-0000-0000-C000-000000000046
+extern IID const IID_IUnknown;
+
+// 00000001-0000-0000-C000-000000000046
+extern IID const IID_IClassFactory;
+
+#ifdef __cplusplus
+    }
+#endif // __cplusplus
+
+//
+// Interfaces
+//
+
+#if defined(__cplusplus) && defined(DNCOMPAL_INTERFACES)
+
+    #define STDMETHODCALLTYPE
+    #define __uuidof(x) IID_ ## x
+
+    using REFGUID = GUID const &;
+    using REFIID = IID const &;
+
+    struct IUnknown
+    {
+        virtual HRESULT STDMETHODCALLTYPE QueryInterface(
+            REFIID riid,
+            void **ppvObject) = 0;
+
+        virtual ULONG STDMETHODCALLTYPE AddRef() = 0;
+
+        virtual ULONG STDMETHODCALLTYPE Release() = 0;
+    };
+
+    struct IClassFactory : public IUnknown
+    {
+        virtual HRESULT STDMETHODCALLTYPE CreateInstance(
+            IUnknown *pUnkOuter,
+            REFIID riid,
+            void **ppvObject) = 0;
+
+        virtual HRESULT STDMETHODCALLTYPE LockServer(
+            BOOL fLock) = 0;
+    };
+
+#endif // __cplusplus && DNCOMPAL_INTERFACES

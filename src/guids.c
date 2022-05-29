@@ -26,9 +26,9 @@
 #include <dncompal.h>
 #include <util.h>
 
-int32_t PAL_IsEqualGUID(GUID const* g1, GUID const* g2)
+BOOL PAL_IsEqualGUID(GUID const* g1, GUID const* g2)
 {
-    return !memcmp(g1, g2, sizeof(*g1));
+    return !memcmp(g1, g2, sizeof(*g1)) ? TRUE : FALSE;
 }
 
 static int const uuid_str_size = ARRAY_SIZE("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx") - 1; // -1 for null

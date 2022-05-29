@@ -2,11 +2,13 @@
 include(../configure.cmake)
 
 if(NOT WIN32)
-    add_compile_definitions(DNCOMPAL_TYPEDEFS)
+    add_compile_definitions(
+        DNCOMPAL_TYPEDEFS
+        DNCOMPAL_INTERFACES)
 endif()
 
 set(SOURCES
-    main.c
+    main.cpp
     )
 
 add_executable(dncompal_test

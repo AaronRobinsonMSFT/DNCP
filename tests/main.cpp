@@ -17,11 +17,10 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
 #include <dncompal.h>
 
 static size_t test_count = 0;
@@ -34,26 +33,14 @@ static size_t test_failure = 0;
     if (!res) \
     { \
         test_failure++; \
-        fprintf(stderr, "FAILED %s: %s\n\tin %s:%u\n", __func__, #x, __FILE__, __LINE__); \
+        std::fprintf(stderr, "FAILED %s: %s\n\tin %s:%u\n", __func__, #x, __FILE__, __LINE__); \
     } \
 }
 
-#define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
-
-void test_memory();
-void test_bstr();
-void test_guid();
-
-int main()
+template<typename E, size_t N>
+constexpr size_t array_size(E const (&)[N])
 {
-    test_memory();
-    test_bstr();
-    test_guid();
-
-    printf("Test pass: %zd / %zd\n", test_count - test_failure, test_count);
-    return test_failure == 0
-        ? EXIT_SUCCESS
-        : EXIT_FAILURE;
+    return N;
 }
 
 void test_memory()
@@ -61,24 +48,24 @@ void test_memory()
     LPVOID p;
     {
         p = PAL_CoTaskMemAlloc(0);
-        TEST_ASSERT(p != NULL);
+        TEST_ASSERT(p != nullptr);
         PAL_CoTaskMemFree(p);
     }
     {
         p = PAL_CoTaskMemAlloc(1);
-        TEST_ASSERT(p != NULL);
+        TEST_ASSERT(p != nullptr);
         PAL_CoTaskMemFree(p);
     }
     {
         p = PAL_CoTaskMemAlloc(12);
-        TEST_ASSERT(p != NULL);
+        TEST_ASSERT(p != nullptr);
         PAL_CoTaskMemFree(p);
     }
     {
         // Check overflow, let OS handle other out of memory values.
         SIZE_T will_overflow = ~((SIZE_T)0) - 6;
         p = PAL_CoTaskMemAlloc(will_overflow);
-        TEST_ASSERT(p == NULL);
+        TEST_ASSERT(p == nullptr);
     }
 }
 
@@ -87,22 +74,22 @@ void test_bstr()
     BSTR bstr;
     {
         WCHAR const expected[] = W("STRING");
-        size_t expected_len = ARRAY_SIZE(expected) - 1; // -1 for null
+        size_t expected_len = array_size(expected) - 1; // -1 for null
         size_t expected_byte_len = expected_len * sizeof(OLECHAR);
 
         bstr = PAL_SysAllocString(expected);
-        TEST_ASSERT(0 == memcmp(expected, bstr, ARRAY_SIZE(expected)));
+        TEST_ASSERT(0 == std::memcmp(expected, bstr, array_size(expected)));
         TEST_ASSERT(expected_len == PAL_SysStringLen(bstr));
         TEST_ASSERT(expected_byte_len == PAL_SysStringByteLen(bstr));
         PAL_SysFreeString(bstr);
     }
     {
         char const expected[] = "string";
-        size_t expected_byte_len = ARRAY_SIZE(expected) - 1; // -1 for null
+        size_t expected_byte_len = array_size(expected) - 1; // -1 for null
         size_t expected_len = expected_byte_len / sizeof(OLECHAR);
 
         bstr = PAL_SysAllocStringByteLen(expected, expected_byte_len);
-        TEST_ASSERT(0 == memcmp(expected, bstr, ARRAY_SIZE(expected)));
+        TEST_ASSERT(0 == std::memcmp(expected, bstr, array_size(expected)));
         TEST_ASSERT(expected_byte_len == PAL_SysStringByteLen(bstr));
         TEST_ASSERT(expected_len == PAL_SysStringLen(bstr));
         PAL_SysFreeString(bstr);
@@ -124,7 +111,7 @@ void test_guid()
         TEST_ASSERT(PAL_IsEqualGUID(&guid, &result));
     }
     {
-        hr = PAL_IIDFromString(NULL, &result);
+        hr = PAL_IIDFromString(nullptr, &result);
         TEST_ASSERT(hr == S_OK);
         TEST_ASSERT(PAL_IsEqualGUID(&null, &result));
     }
@@ -138,13 +125,38 @@ void test_guid()
         TEST_ASSERT(CO_E_CLASSSTRING == PAL_IIDFromString(W("{12345678-9abc-def0-1234-56789ABCDEF0} "), &result));
     }
     {
-        OLECHAR buffer[ARRAY_SIZE(str_guid)];
-        count = PAL_StringFromGUID2(&guid, buffer, ARRAY_SIZE(buffer));
-        TEST_ASSERT(count == ARRAY_SIZE(buffer));
-        TEST_ASSERT(0 == memcmp(buffer, str_guid, ARRAY_SIZE(buffer)));
+        OLECHAR buffer[array_size(str_guid)];
+        count = PAL_StringFromGUID2(&guid, buffer, array_size(buffer));
+        TEST_ASSERT(count == array_size(buffer));
+        TEST_ASSERT(0 == std::memcmp(buffer, str_guid, array_size(buffer)));
     }
     {
-        count = PAL_StringFromGUID2(&guid, NULL, ARRAY_SIZE(str_guid) - 1);
+        count = PAL_StringFromGUID2(&guid, nullptr, array_size(str_guid) - 1);
         TEST_ASSERT(count == 0);
     }
+}
+
+void test_interfaces()
+{
+    {
+        REFIID iid = __uuidof(IUnknown);
+        TEST_ASSERT(PAL_IsEqualGUID(&iid, &IID_IUnknown));
+    }
+    {
+        REFIID iid = __uuidof(IClassFactory);
+        TEST_ASSERT(PAL_IsEqualGUID(&iid, &IID_IClassFactory));
+    }
+}
+
+int main()
+{
+    test_memory();
+    test_bstr();
+    test_guid();
+    test_interfaces();
+
+    std::printf("Test pass: %zd / %zd\n", test_count - test_failure, test_count);
+    return test_failure == 0
+        ? EXIT_SUCCESS
+        : EXIT_FAILURE;
 }

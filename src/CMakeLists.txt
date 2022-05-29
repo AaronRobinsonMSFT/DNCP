@@ -11,6 +11,7 @@ else()
         memory.c
         bstr.c
         guids.c
+        interfaces.c
         )
     add_compile_definitions(DNCOMPAL_TYPEDEFS)
 endif()
