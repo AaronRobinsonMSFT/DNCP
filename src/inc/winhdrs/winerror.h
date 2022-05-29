@@ -39,6 +39,8 @@
 #define E_NOTIMPL        ((HRESULT)0x80004001)
 #define E_NOINTERFACE    ((HRESULT)0x80004002)
 #define E_POINTER        ((HRESULT)0x80004003)
+#define E_ABORT          ((HRESULT)0x80004004)
+#define E_FAIL           ((HRESULT)0x80004005)
 
 #define CO_E_CLASSSTRING ((HRESULT)0x800401F3)
 

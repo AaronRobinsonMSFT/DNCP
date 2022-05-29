@@ -119,57 +119,62 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
 
 #ifdef DNCOMPAL_WINHDRS
     #include <winerror.h>
-#endif
 
-#if defined(__cplusplus) && defined(DNCOMPAL_WINHDRS)
+    #if defined(__cplusplus)
 
-    #define EXTERN_C extern "C"
+        #define EXTERN_C extern "C"
 
-    using REFGUID = GUID const&;
-    using IID = GUID;
-    using REFIID = IID const&;
-    using CLSID = GUID;
-    using REFCLSID = CLSID const&;
+        using REFGUID = GUID const&;
+        using IID = GUID;
+        using REFIID = IID const&;
+        using CLSID = GUID;
+        using REFCLSID = CLSID const&;
 
-    #define EXTERN_GUID(itf,l1,s1,s2,c1,c2,c3,c4,c5,c6,c7,c8) \
-        EXTERN_C __declspec(selectany) IID const itf = {l1,s1,s2,{c1,c2,c3,c4,c5,c6,c7,c8}}
+        #define EXTERN_GUID(itf,l1,s1,s2,c1,c2,c3,c4,c5,c6,c7,c8) \
+            EXTERN_C __declspec(selectany) IID const itf = {l1,s1,s2,{c1,c2,c3,c4,c5,c6,c7,c8}}
 
-    // sal
-    #define _In_
-    #define _Out_
-    #define _Out_opt_
-    #define _Out_writes_to_opt_(x,y)
-    #define _Out_writes_to_(x,y)
-    #define _COM_Outptr_
-    #define __RPC__deref_out_opt
+        inline bool operator==(REFGUID a, REFGUID b)
+        {
+            return FALSE != PAL_IsEqualGUID(&a, &b);
+        }
 
-    // COM Interface definitions
-    #define __uuidof(type) IID_##type
-    #define interface struct
-    #define DECLSPEC_UUID(x)
-    #define DECLSPEC_NOVTABLE
-    #define MIDL_INTERFACE(x)                       struct DECLSPEC_UUID(x) DECLSPEC_NOVTABLE
-    #define DECLARE_INTERFACE_(iface, baseiface)    interface DECLSPEC_NOVTABLE iface : public baseiface
-    #define STDMETHODCALLTYPE
-    #define STDMETHOD(method)       virtual HRESULT STDMETHODCALLTYPE method
-    #define STDMETHOD_(type,method) virtual type STDMETHODCALLTYPE method
+        // sal
+        #define _In_
+        #define _Out_
+        #define _Out_opt_
+        #define _Out_writes_to_opt_(x,y)
+        #define _Out_writes_to_(x,y)
+        #define _COM_Outptr_
+        #define __RPC__deref_out_opt
 
-    #define UNALIGNED
-    #define PURE = 0
+        // COM Interface definitions
+        #define __uuidof(type) IID_##type
+        #define interface struct
+        #define DECLSPEC_UUID(x)
+        #define DECLSPEC_NOVTABLE
+        #define MIDL_INTERFACE(x)                       struct DECLSPEC_UUID(x) DECLSPEC_NOVTABLE
+        #define DECLARE_INTERFACE_(iface, baseiface)    interface DECLSPEC_NOVTABLE iface : public baseiface
+        #define STDMETHODCALLTYPE
+        #define STDMETHOD(method)       virtual HRESULT STDMETHODCALLTYPE method
+        #define STDMETHOD_(type,method) virtual type STDMETHODCALLTYPE method
 
-    #include <unknwn.h>
+        #define UNALIGNED
+        #define PURE = 0
 
-    // Unusable COM and RPC types
-    interface ITypeInfo;
-    interface IStream;
-    struct VARIANT;
-    interface IRpcChannelBuffer;
-    using RPC_IF_HANDLE = void*;
+        #include <unknwn.h>
 
-    // Unusable Win32 types
-    using LPDEBUG_EVENT = SIZE_T;
-    using LPSTARTUPINFOW = SIZE_T;
-    using LPPROCESS_INFORMATION = SIZE_T;
-    using LPSECURITY_ATTRIBUTES = SIZE_T;
+        // Unusable COM and RPC types
+        interface ITypeInfo;
+        interface IStream;
+        struct VARIANT;
+        interface IRpcChannelBuffer;
+        using RPC_IF_HANDLE = void*;
 
-#endif // __cplusplus && DNCOMPAL_INTERFACES
+        // Unusable Win32 types
+        using LPDEBUG_EVENT = SIZE_T;
+        using LPSTARTUPINFOW = SIZE_T;
+        using LPPROCESS_INFORMATION = SIZE_T;
+        using LPSECURITY_ATTRIBUTES = SIZE_T;
+
+    #endif // __cplusplus
+#endif // DNCOMPAL_INTERFACES
