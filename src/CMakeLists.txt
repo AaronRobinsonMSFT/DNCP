@@ -37,5 +37,7 @@ if(NOT WIN32)
     target_include_directories(dncompal PRIVATE ./inc/winhdrs)
 endif()
 
+install(TARGETS dncompal)
+
 # Chain in the Windows headers interface
 add_subdirectory(inc/winhdrs)
