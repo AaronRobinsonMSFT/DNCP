@@ -1,0 +1,10 @@
+<Project>
+    <PropertyGroup>
+        <ArtifactsDir>$(MSBuildThisFileDirectory)artifacts/</ArtifactsDir>
+
+        <BaseIntermediateOutputPath>$(ArtifactsDir)/obj/$(MSBuildProjectName)</BaseIntermediateOutputPath>
+        <BaseOutputPath>$(ArtifactsDir)/bin/$(MSBuildProjectName)</BaseOutputPath>
+
+        <TargetFrameworkLatest>net6.0</TargetFrameworkLatest>
+    </PropertyGroup>
+</Project>
