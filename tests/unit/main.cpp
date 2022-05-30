@@ -43,6 +43,12 @@ constexpr size_t array_size(E const (&)[N])
     return N;
 }
 
+template<typename E, size_t N>
+constexpr size_t array_size_bytes(E const (&)[N])
+{
+    return N * sizeof(E);
+}
+
 void test_memory()
 {
     LPVOID p;
@@ -78,7 +84,7 @@ void test_bstr()
         size_t expected_byte_len = expected_len * sizeof(OLECHAR);
 
         bstr = PAL_SysAllocString(expected);
-        TEST_ASSERT(0 == std::memcmp(expected, bstr, array_size(expected)));
+        TEST_ASSERT(0 == std::memcmp(expected, bstr, array_size_bytes(expected)));
         TEST_ASSERT(expected_len == PAL_SysStringLen(bstr));
         TEST_ASSERT(expected_byte_len == PAL_SysStringByteLen(bstr));
         PAL_SysFreeString(bstr);
@@ -89,7 +95,7 @@ void test_bstr()
         size_t expected_len = expected_byte_len / sizeof(OLECHAR);
 
         bstr = PAL_SysAllocStringByteLen(expected, expected_byte_len);
-        TEST_ASSERT(0 == std::memcmp(expected, bstr, array_size(expected)));
+        TEST_ASSERT(0 == std::memcmp(expected, bstr, array_size_bytes(expected)));
         TEST_ASSERT(expected_byte_len == PAL_SysStringByteLen(bstr));
         TEST_ASSERT(expected_len == PAL_SysStringLen(bstr));
         PAL_SysFreeString(bstr);
@@ -128,7 +134,17 @@ void test_guid()
         OLECHAR buffer[array_size(str_guid)];
         count = PAL_StringFromGUID2(&guid, buffer, array_size(buffer));
         TEST_ASSERT(count == array_size(buffer));
-        TEST_ASSERT(0 == std::memcmp(buffer, str_guid, array_size(buffer)));
+
+        // Convert from string back into GUID.
+        hr = PAL_IIDFromString(buffer, &result);
+        TEST_ASSERT(hr == S_OK);
+        TEST_ASSERT(PAL_IsEqualGUID(&guid, &result));
+
+        // Convert back into GUID.
+        OLECHAR buffer2[array_size(str_guid)];
+        count = PAL_StringFromGUID2(&result, buffer2, array_size(buffer2));
+        TEST_ASSERT(count == array_size(buffer2));
+        TEST_ASSERT(0 == std::memcmp(buffer, buffer2, array_size_bytes(buffer)));
     }
     {
         count = PAL_StringFromGUID2(&guid, nullptr, array_size(str_guid) - 1);

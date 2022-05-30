@@ -31,7 +31,7 @@ BOOL PAL_IsEqualGUID(GUID const* g1, GUID const* g2)
     return !memcmp(g1, g2, sizeof(*g1)) ? TRUE : FALSE;
 }
 
-static int const uuid_str_size = ARRAY_SIZE("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx") - 1; // -1 for null
+static int const uuid_str_size = ARRAY_SIZE("12345678-1234-1234-1234-123456789abc") - 1; // -1 for null
 static int const guid_str_size = uuid_str_size + 2; // +2 for the surrounding braces
 
 int32_t PAL_StringFromGUID2(GUID const* guid, LPOLESTR buffer, int32_t count)
@@ -40,7 +40,7 @@ int32_t PAL_StringFromGUID2(GUID const* guid, LPOLESTR buffer, int32_t count)
         return 0;
 
     char local[guid_str_size + 1]; // +1 for null
-    int res = snprintf(local, guid_str_size, "{%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x}",
+    int res = snprintf(local, ARRAY_SIZE(local), "{%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x}",
             guid->Data1, guid->Data2, guid->Data3,
             guid->Data4[0], guid->Data4[1],
             guid->Data4[2], guid->Data4[3],
