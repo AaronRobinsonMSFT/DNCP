@@ -76,7 +76,7 @@ HRESULT PAL_IIDFromString(LPCOLESTR str, IID* iid)
 
     return GUIDFromString(str, iid)
         ? S_OK
-        : CO_E_CLASSSTRING;
+        : E_INVALIDARG;
 }
 
 static bool GUIDFromString(LPCOLESTR str, GUID* guid)

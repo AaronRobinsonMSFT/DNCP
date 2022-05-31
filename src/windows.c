@@ -17,31 +17,70 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#ifndef _WINHDRS_WINERROR_H_
-#define _WINHDRS_WINERROR_H_
+#include <stdint.h>
+#include <stdlib.h>
 
-#define SEVERITY_SUCCESS    0
-#define SEVERITY_ERROR      1
-#define FACILITY_WIN32      7
+#ifdef _MSC_VER
+    #define NOMINMAX
+    #define WIN32_LEAN_AND_MEAN
+    #include <Windows.h>
+    #include <Objbase.h>
+    #include <combaseapi.h>
+#endif
 
-#define MAKE_HRESULT(sev,fac,code) \
-    ((HRESULT) (((ULONG)(sev)<<31) | ((ULONG)(fac)<<16) | ((ULONG)(code))) )
+#include <dncompal.h>
 
-#define SUCCEEDED(x) (x >= 0)
-#define FAILED(x) (x < 0)
+LPVOID PAL_CoTaskMemAlloc(SIZE_T a)
+{
+    return CoTaskMemAlloc(a);
+}
 
-// Win32 HRESULTs
-#define S_OK            ((HRESULT)0)
-#define S_FALSE         ((HRESULT)1)
-#define E_OUTOFMEMORY   ((HRESULT)0x8007000E)
-#define E_INVALIDARG    ((HRESULT)0x80070057)
+void PAL_CoTaskMemFree(LPVOID a)
+{
+    CoTaskMemFree(a);
+}
 
-#define E_NOTIMPL        ((HRESULT)0x80004001)
-#define E_NOINTERFACE    ((HRESULT)0x80004002)
-#define E_POINTER        ((HRESULT)0x80004003)
-#define E_ABORT          ((HRESULT)0x80004004)
-#define E_FAIL           ((HRESULT)0x80004005)
+BSTR PAL_SysAllocString(LPCOLESTR a)
+{
+    return SysAllocString(a);
+}
 
-#define E_NOT_SET MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, 1168)
+BSTR PAL_SysAllocStringLen(LPCOLESTR a, UINT b)
+{
+    return SysAllocStringLen(a, b);
+}
 
-#endif // _WINHDRS_WINERROR_H_
+BSTR PAL_SysAllocStringByteLen(char const* a, UINT b)
+{
+    return SysAllocStringByteLen(a, b);
+}
+
+void PAL_SysFreeString(BSTR a)
+{
+    SysFreeString(a);
+}
+
+UINT PAL_SysStringLen(BSTR a)
+{
+    return SysStringLen(a);
+}
+
+UINT PAL_SysStringByteLen(BSTR a)
+{
+    return SysStringByteLen(a);
+}
+
+BOOL PAL_IsEqualGUID(GUID const* a, GUID const* b)
+{
+    return IsEqualGUID(a, b);
+}
+
+int32_t PAL_StringFromGUID2(GUID const* a, LPOLESTR b, int32_t c)
+{
+    return StringFromGUID2(a, b, c);
+}
+
+HRESULT PAL_IIDFromString(LPCOLESTR a, IID* b)
+{
+    return IIDFromString(a, b);
+}

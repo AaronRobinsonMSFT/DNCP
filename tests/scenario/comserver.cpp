@@ -22,6 +22,15 @@
 #include <atomic>
 #include <new>
 #include <array>
+
+#ifdef _MSC_VER
+    #define NOMINMAX
+    #define WIN32_LEAN_AND_MEAN
+    #include <Windows.h>
+    #include <Objbase.h>
+    #include <combaseapi.h>
+#endif
+
 #include <dncompal.h>
 
 // 4A23EA71-363E-4609-AD85-CFBF5716A9FA
@@ -52,7 +61,7 @@ public: // IComServer
             return E_POINTER;
 
         std::array<WCHAR, 64> buffer;
-        if (0 == PAL_StringFromGUID2(&guid, buffer.data(), buffer.size()))
+        if (0 == PAL_StringFromGUID2(&guid, buffer.data(), (int32_t)buffer.size()))
             return E_FAIL;
 
         BSTR bstr = PAL_SysAllocString(buffer.data());

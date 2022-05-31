@@ -21,6 +21,12 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
+
+#ifdef _MSC_VER
+    #include <Windows.h>
+    #include <wtypes.h>
+#endif
+
 #include <dncompal.h>
 
 static size_t test_count = 0;
@@ -94,7 +100,7 @@ void test_bstr()
         size_t expected_byte_len = array_size(expected) - 1; // -1 for null
         size_t expected_len = expected_byte_len / sizeof(OLECHAR);
 
-        bstr = PAL_SysAllocStringByteLen(expected, expected_byte_len);
+        bstr = PAL_SysAllocStringByteLen(expected, (UINT)expected_byte_len);
         TEST_ASSERT(0 == std::memcmp(expected, bstr, array_size_bytes(expected)));
         TEST_ASSERT(expected_byte_len == PAL_SysStringByteLen(bstr));
         TEST_ASSERT(expected_len == PAL_SysStringLen(bstr));
@@ -122,17 +128,17 @@ void test_guid()
         TEST_ASSERT(PAL_IsEqualGUID(&null, &result));
     }
     {
-        TEST_ASSERT(CO_E_CLASSSTRING == PAL_IIDFromString(W("{123456789abc-def0-1234-56789ABCDEF0}"), &result));
-        TEST_ASSERT(CO_E_CLASSSTRING == PAL_IIDFromString(W("{12345678-9abcdef0-1234-56789ABCDEF0}"), &result));
-        TEST_ASSERT(CO_E_CLASSSTRING == PAL_IIDFromString(W("{12345678-9abc-def01234-56789ABCDEF0}"), &result));
-        TEST_ASSERT(CO_E_CLASSSTRING == PAL_IIDFromString(W("{12345678-9abc-def0-123456789ABCDEF0}"), &result));
-        TEST_ASSERT(CO_E_CLASSSTRING == PAL_IIDFromString(W("{12345678-9abc-def0-1234-56789ABCDEF0"), &result));
-        TEST_ASSERT(CO_E_CLASSSTRING == PAL_IIDFromString(W("12345678-9abc-def0-1234-56789ABCDEF0}"), &result));
-        TEST_ASSERT(CO_E_CLASSSTRING == PAL_IIDFromString(W("{12345678-9abc-def0-1234-56789ABCDEF0} "), &result));
+        TEST_ASSERT(E_INVALIDARG == PAL_IIDFromString(W("{123456789abc-def0-1234-56789ABCDEF0}"), &result));
+        TEST_ASSERT(E_INVALIDARG == PAL_IIDFromString(W("{12345678-9abcdef0-1234-56789ABCDEF0}"), &result));
+        TEST_ASSERT(E_INVALIDARG == PAL_IIDFromString(W("{12345678-9abc-def01234-56789ABCDEF0}"), &result));
+        TEST_ASSERT(E_INVALIDARG == PAL_IIDFromString(W("{12345678-9abc-def0-123456789ABCDEF0}"), &result));
+        TEST_ASSERT(E_INVALIDARG == PAL_IIDFromString(W("{12345678-9abc-def0-1234-56789ABCDEF0"), &result));
+        TEST_ASSERT(E_INVALIDARG == PAL_IIDFromString(W("12345678-9abc-def0-1234-56789ABCDEF0}"), &result));
+        TEST_ASSERT(E_INVALIDARG == PAL_IIDFromString(W("{12345678-9abc-def0-1234-56789ABCDEF0} "), &result));
     }
     {
         OLECHAR buffer[array_size(str_guid)];
-        count = PAL_StringFromGUID2(&guid, buffer, array_size(buffer));
+        count = PAL_StringFromGUID2(&guid, buffer, (int32_t)array_size(buffer));
         TEST_ASSERT(count == array_size(buffer));
 
         // Convert from string back into GUID.
@@ -142,12 +148,12 @@ void test_guid()
 
         // Convert back into GUID.
         OLECHAR buffer2[array_size(str_guid)];
-        count = PAL_StringFromGUID2(&result, buffer2, array_size(buffer2));
+        count = PAL_StringFromGUID2(&result, buffer2, (int32_t)array_size(buffer2));
         TEST_ASSERT(count == array_size(buffer2));
         TEST_ASSERT(0 == std::memcmp(buffer, buffer2, array_size_bytes(buffer)));
     }
     {
-        count = PAL_StringFromGUID2(&guid, nullptr, array_size(str_guid) - 1);
+        count = PAL_StringFromGUID2(&guid, nullptr, (int32_t)array_size(str_guid) - 1);
         TEST_ASSERT(count == 0);
     }
 }
