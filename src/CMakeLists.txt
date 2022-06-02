@@ -13,30 +13,30 @@ else()
         interfaces.c
         )
     add_compile_definitions(
-        DNCOMPAL_TYPEDEFS
-        DNCOMPAL_WINHDRS)
+        DNCP_TYPEDEFS
+        DNCP_WINHDRS)
 endif()
 
 set(HEADERS
-    inc/dncompal.h
+    inc/dncp.h
     )
 
-add_library(dncompal
+add_library(dncp
     STATIC
     ${SOURCES}
     ${HEADERS})
 
-set_target_properties(dncompal PROPERTIES PUBLIC_HEADER inc/dncompal.h)
-target_include_directories(dncompal PUBLIC ./inc)
+set_target_properties(dncp PROPERTIES PUBLIC_HEADER inc/dncp.h)
+target_include_directories(dncp PUBLIC ./inc)
 
 if(NOT WIN32)
     # Marked private because consumption of the Windows' headers is
     # a build implementation detail and shouldn't impose on the consumer
-    # of dncompal.
-    target_include_directories(dncompal PRIVATE ./inc/winhdrs)
+    # of dncp.
+    target_include_directories(dncp PRIVATE ./inc/winhdrs)
 endif()
 
-install(TARGETS dncompal)
+install(TARGETS dncp)
 
 # Chain in the Windows headers interface
 add_subdirectory(inc/winhdrs)

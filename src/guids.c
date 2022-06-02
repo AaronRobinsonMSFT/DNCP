@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
-#include <dncompal.h>
+#include <dncp.h>
 #include <util.h>
 
 BOOL PAL_IsEqualGUID(GUID const* g1, GUID const* g2)

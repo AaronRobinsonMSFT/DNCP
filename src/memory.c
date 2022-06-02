@@ -19,7 +19,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include <dncompal.h>
+#include <dncp.h>
 
 // CoTaskMemAlloc always aligns on an 8-byte boundary.
 #define ALIGN 8

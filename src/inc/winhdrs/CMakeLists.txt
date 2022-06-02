@@ -13,8 +13,8 @@ set(WINHDRS_HEADERS
     unknwn.h
     winerror.h)
 
-add_library(dncompal_winhdrs INTERFACE ${WINHDRS_HEADERS})
-target_include_directories(dncompal_winhdrs INTERFACE
+add_library(dncp_winhdrs INTERFACE ${WINHDRS_HEADERS})
+target_include_directories(dncp_winhdrs INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<INSTALL_INTERFACE:include/winhdrs>
 )

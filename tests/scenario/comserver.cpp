@@ -31,7 +31,7 @@
     #include <combaseapi.h>
 #endif
 
-#include <dncompal.h>
+#include <dncp.h>
 
 // 4A23EA71-363E-4609-AD85-CFBF5716A9FA
 static IID const IID_IComServer = { 0x4A23EA71, 0x363E, 0x4609, { 0xAD, 0x85, 0xCF, 0xBF, 0x57, 0x16, 0xA9, 0xFA } };

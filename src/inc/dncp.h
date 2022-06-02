@@ -19,11 +19,11 @@
 
 // Perform platform check
 #ifdef _MSC_VER
-    #define DNCOMPAL_WINDOWS
+    #define DNCP_WINDOWS
 #endif
 
 // Typedefs typically provided by Windows' headers
-#ifdef DNCOMPAL_TYPEDEFS
+#ifdef DNCP_TYPEDEFS
     typedef void* LPVOID;
     typedef void const* LPCVOID;
     typedef uintptr_t UINT_PTR;
@@ -73,7 +73,7 @@
     } GUID;
 
     typedef GUID IID;
-#endif // DNCOMPAL_TYPEDEFS
+#endif // DNCP_TYPEDEFS
 
 #ifdef __cplusplus
     extern "C"
@@ -91,7 +91,7 @@ void PAL_CoTaskMemFree(LPVOID);
 //
 
 // This macro is used to standardize wide character string literals used in .NET.
-#ifdef DNCOMPAL_WINDOWS
+#ifdef DNCP_WINDOWS
     #define W(str)  L ## str
 #else
     #define W(str)  u ## str
@@ -122,7 +122,7 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
 // Windows headers
 //
 
-#ifdef DNCOMPAL_WINHDRS
+#ifdef DNCP_WINHDRS
     #include <winerror.h>
 
     #if defined(__cplusplus)
@@ -182,4 +182,4 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
         using LPSECURITY_ATTRIBUTES = SIZE_T;
 
     #endif // __cplusplus
-#endif // DNCOMPAL_INTERFACES
+#endif // DNCP_INTERFACES

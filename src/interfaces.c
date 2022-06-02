@@ -19,7 +19,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include <dncompal.h>
+#include <dncp.h>
 
 // 00000000-0000-0000-C000-000000000046
 IID const IID_IUnknown = { 0x0, 0x0, 0x0, { 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46 } };

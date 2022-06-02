@@ -22,7 +22,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <assert.h>
-#include <dncompal.h>
+#include <dncp.h>
 
 //
 // The BSTR is an allocation that is at least 6-bytes in size.

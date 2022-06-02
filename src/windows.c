@@ -28,7 +28,7 @@
     #include <combaseapi.h>
 #endif
 
-#include <dncompal.h>
+#include <dncp.h>
 
 LPVOID PAL_CoTaskMemAlloc(SIZE_T a)
 {

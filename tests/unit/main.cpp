@@ -27,7 +27,7 @@
     #include <wtypes.h>
 #endif
 
-#include <dncompal.h>
+#include <dncp.h>
 
 static size_t test_count = 0;
 static size_t test_failure = 0;
