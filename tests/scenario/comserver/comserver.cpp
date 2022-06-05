@@ -118,12 +118,12 @@ public: // IUnknown
     }
 };
 
-EXTERN_C EXPORT_API HRESULT GetComServer(REFIID riid, LPVOID *ppv)
+EXTERN_C EXPORT_API HRESULT CreateComServer(REFIID riid, LPVOID *ppv)
 {
     if (ppv == nullptr)
         return E_POINTER;
 
-    ComServer* server = new (std::nothrow) ComServer();
+    ComServer* server = new (std::nothrow) ComServer{};
     if (server == nullptr)
         return E_OUTOFMEMORY;
 

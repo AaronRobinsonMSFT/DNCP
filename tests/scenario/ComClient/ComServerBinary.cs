@@ -22,25 +22,26 @@ using System.Runtime.InteropServices;
 
 using Xunit;
 
-namespace ComClient;
-
-public class ComServerBinary
+namespace ComClient
 {
-    [Fact]
-    public void ValidateLoadAndExport()
+    public class ComServerBinary
     {
-        IntPtr ptr = NativeLibrary.Load(GetLibraryName("comserver"));
-        Assert.True(NativeLibrary.TryGetExport(ptr, "GetComServer", out IntPtr export));
-        Assert.NotEqual(IntPtr.Zero, export);
-        NativeLibrary.Free(ptr);
-
-        static string GetLibraryName(string name)
+        [Fact]
+        public void ValidateLoadAndExport()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                return $"{name}.dll";
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                return $"lib{name}.dylib";
-            return $"lib{name}.so";
+            IntPtr ptr = NativeLibrary.Load(GetLibraryName("comserver"));
+            Assert.True(NativeLibrary.TryGetExport(ptr, "CreateComServer", out IntPtr export));
+            Assert.NotEqual(IntPtr.Zero, export);
+            NativeLibrary.Free(ptr);
+
+            static string GetLibraryName(string name)
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    return $"{name}.dll";
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                    return $"lib{name}.dylib";
+                return $"lib{name}.so";
+            }
         }
     }
 }
