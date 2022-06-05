@@ -115,6 +115,8 @@ void test_guid()
     GUID result;
     GUID guid = { 0x12345678, 0x9abc, 0xdef0, { 0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0 } };
     GUID null = { 0, 0, 0, { 0, 0, 0, 0, 0, 0, 0, 0 } };
+
+    // Mixed case to validate parsing works.
     WCHAR const str_guid[] = W("{12345678-9abc-def0-1234-56789ABCDEF0}");
 
     {
