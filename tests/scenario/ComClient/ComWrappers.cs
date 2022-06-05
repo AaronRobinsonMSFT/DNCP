@@ -63,7 +63,9 @@ public unsafe class UseComWrappers
 
         var guid = Guid.NewGuid();
         server.GuidToString(in guid, out string asStr);
-        Assert.Equal(guid.ToString("B"), asStr);
+
+        // The COM APIs being used convert GUIDs to uppercase.
+        Assert.Equal(guid.ToString("B").ToUpper(), asStr);
     }
 
     private unsafe class ComWrappersImpl : ComWrappers

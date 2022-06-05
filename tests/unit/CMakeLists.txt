@@ -1,18 +1,22 @@
+# Unit tests
+
 set(SOURCES
-    main.cpp
-    )
+  main.cpp
+)
 
 add_executable(dncp_test
-    ${SOURCES}
-    ${HEADERS})
+  ${SOURCES}
+  ${HEADERS}
+)
 
 if(NOT WIN32)
-    add_compile_definitions(
-        DNCP_TYPEDEFS
-        DNCP_WINHDRS)
+  add_compile_definitions(
+    DNCP_TYPEDEFS
+    DNCP_WINHDRS
+  )
 
-    # Include the exported headers for non-Windows building.
-    target_link_libraries(dncp_test dncp_winhdrs)
+  # Include the exported headers for non-Windows building.
+  target_link_libraries(dncp_test dncp_winhdrs)
 endif()
 
 target_link_libraries(dncp_test dncp)
