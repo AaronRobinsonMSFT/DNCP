@@ -22,5 +22,5 @@ endif()
 
 target_link_libraries(comserver dncp)
 install(TARGETS comserver
-  DESTINATION lib
+  DESTINATION bin
 )
