@@ -24,6 +24,7 @@
 
 // Typedefs typically provided by Windows' headers
 #ifdef DNCP_TYPEDEFS
+    typedef void* PVOID;
     typedef void* LPVOID;
     typedef void const* LPCVOID;
     typedef uintptr_t UINT_PTR;
@@ -63,6 +64,7 @@
     #define VARIANT_FALSE ((VARIANT_BOOL)0)
 
     typedef uint32_t HRESULT;
+    typedef void* HANDLE;
 
     typedef struct
     {
