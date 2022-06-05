@@ -40,7 +40,7 @@ int32_t PAL_StringFromGUID2(GUID const* guid, LPOLESTR buffer, int32_t count)
         return 0;
 
     char local[guid_str_size + 1]; // +1 for null
-    int res = snprintf(local, ARRAY_SIZE(local), "{%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x}",
+    int res = snprintf(local, ARRAY_SIZE(local), "{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}",
             guid->Data1, guid->Data2, guid->Data3,
             guid->Data4[0], guid->Data4[1],
             guid->Data4[2], guid->Data4[3],
