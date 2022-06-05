@@ -53,6 +53,10 @@ These steps are the general process. Note that depending on how complex your pro
     ```
 
 1. Reference the [`dncp.h`](./src/inc/dncp.h) header and link the DNCP static library into the target project.
+    ```c
+    #include <dncp.h>
+    ```
+
     ```cmake
     target_link_libraries(mycomlib dncp)
     ```
