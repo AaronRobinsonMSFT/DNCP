@@ -41,7 +41,9 @@
     typedef uint64_t ULONG64;
     typedef uint64_t ULONGLONG;
 
-#ifdef __cplusplus
+#ifdef DNCP_WINDOWS
+    typedef wchar_t WCHAR;
+#elif defined(__cplusplus)
     typedef char16_t WCHAR;
 #else
     typedef uint16_t WCHAR;
@@ -63,7 +65,7 @@
     #define VARIANT_TRUE ((VARIANT_BOOL)-1)
     #define VARIANT_FALSE ((VARIANT_BOOL)0)
 
-    typedef uint32_t HRESULT;
+    typedef int32_t HRESULT;
     typedef void* HANDLE;
 
     typedef struct

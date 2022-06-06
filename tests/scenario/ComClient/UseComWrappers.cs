@@ -28,12 +28,6 @@ namespace ComClient
     public unsafe class UseComWrappers
     {
         [Fact]
-        public void InvalidArguments()
-        {
-            Assert.Throws<NullReferenceException>(() => ComServer.CreateComServer(null, null));
-        }
-
-        [Fact]
         public void CallServer()
         {
             ComWrappersImpl cw = new();

@@ -24,7 +24,7 @@ using Xunit;
 
 namespace ComClient
 {
-    public class ComServerBinary
+    public unsafe class ComServerBinary
     {
         [Fact]
         public void ValidateLoadAndExport()
@@ -42,6 +42,18 @@ namespace ComClient
                     return $"lib{name}.dylib";
                 return $"lib{name}.so";
             }
+        }
+
+        [Fact]
+        public void InvalidArguments()
+        {
+            Assert.Throws<NullReferenceException>(() => ComServer.CreateComServer(null, null));
+            Assert.Throws<InvalidCastException>(() =>
+            {
+                var null_iid = Guid.Empty;
+                IntPtr serverPtr;
+                ComServer.CreateComServer(&null_iid, &serverPtr);
+            });
         }
     }
 }

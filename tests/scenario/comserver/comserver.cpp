@@ -128,11 +128,13 @@ EXTERN_C EXPORT_API HRESULT CreateComServer(REFIID riid, LPVOID *ppv)
         return E_OUTOFMEMORY;
 
     HRESULT hr = server->QueryInterface(riid, ppv);
+
+    // The QueryInterface() will do an AddRef() if successful,
+    // so we can safely release the initial AddRef() here.
+    (void)server->Release();
+
     if (FAILED(hr))
-    {
-        (void)server->Release();
         return hr;
-    }
 
     return S_OK;
 }

@@ -32,7 +32,7 @@
 // using LPOLESTR("a"), would be in memory as:
 //
 //  | 2 | 0 | 0 | 0 | 'a' | '\0' | '\0' | '\0' |
-//                  ^ Where the BSTR* would point.
+//                  ^ Where the BSTR would point.
 //
 // We do want to ensure we are 8-byte aligned. CoTaskMemAlloc
 // provides this guarantee, but with the offset of 4-bytes for

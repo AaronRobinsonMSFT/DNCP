@@ -31,10 +31,10 @@
 #define FAILED(x) (x < 0)
 
 // Win32 HRESULTs
-#define S_OK            ((HRESULT)0)
-#define S_FALSE         ((HRESULT)1)
-#define E_OUTOFMEMORY   ((HRESULT)0x8007000E)
-#define E_INVALIDARG    ((HRESULT)0x80070057)
+#define S_OK             ((HRESULT)0)
+#define S_FALSE          ((HRESULT)1)
+#define E_OUTOFMEMORY    ((HRESULT)0x8007000E)
+#define E_INVALIDARG     ((HRESULT)0x80070057)
 
 #define E_NOTIMPL        ((HRESULT)0x80004001)
 #define E_NOINTERFACE    ((HRESULT)0x80004002)

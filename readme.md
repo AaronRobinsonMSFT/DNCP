@@ -32,11 +32,11 @@ Non-Windows:
 
 The recommended way to use DNCP is via [git submodules][git_submodules] and CMake.
 
-The `dncp.h` header contains uniform definitions of common COM APIs. All types are identically named to those in official Windows headers. All functions are prefixed with `PAL_` followed by their official Win32 name (for example, `SysAllocString` is `PAL_SysAllocString`). Ideally, all instances of the functions provided by DNCP will replace explicit uses of the Win32 APIs as DNCP will properly forward to the Windows implementation when running on Windows &ndash; see [`windows.c`](./src/windows.c).
+The `dncp.h` header contains consistent definitions of common COM APIs. All data types are identically named to those in official Windows' headers. All functions are prefixed with `PAL_` followed by the official Win32 name (for example, `SysAllocString` is `PAL_SysAllocString`). Ideally, all functions provided by DNCP replace the corresponding Win32 APIs as DNCP will forward to the Windows implementation when running on Windows &ndash; see [`windows.c`](./src/windows.c).
 
-Users can set some defines during compilation to tailor how they would like to develop their COM library.
+Users can set defines during compilation to tailor how they would like to develop their COM library.
 
-* `DNCP_TYPEDEFS` &ndash; Defines the most common Win32 types needed for .NET scenarios. If this isn't set, the project should define them or include the official Windows' headers.
+* `DNCP_TYPEDEFS` &ndash; Defines the most common Win32 data types needed for .NET scenarios. If this isn't set, the project should define them or include the official Windows' headers.
 
 * `DNCP_WINHDRS` &ndash; Includes the minimal mocked out Windows' headers provided by DNCP. This is typically needed if building on non-Windows and/or referencing official .NET headers (for example, [`cor.h`](https://github.com/dotnet/runtime/blob/main/src/coreclr/inc/cor.h)). If this is set, the project should also link against `dncp_winhdrs`, see example below.
 
