@@ -114,7 +114,7 @@ void test_guid()
     int32_t count;
     GUID result;
     GUID guid = { 0x12345678, 0x9abc, 0xdef0, { 0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0 } };
-    GUID null = { 0, 0, 0, { 0, 0, 0, 0, 0, 0, 0, 0 } };
+    GUID null_guid = { 0, 0, 0, { 0, 0, 0, 0, 0, 0, 0, 0 } };
 
     // Mixed case to validate parsing works.
     WCHAR const str_guid[] = W("{12345678-9abc-def0-1234-56789ABCDEF0}");
@@ -127,7 +127,7 @@ void test_guid()
     {
         hr = PAL_IIDFromString(nullptr, &result);
         TEST_ASSERT(hr == S_OK);
-        TEST_ASSERT(PAL_IsEqualGUID(&null, &result));
+        TEST_ASSERT(PAL_IsEqualGUID(&null_guid, &result));
     }
     {
         TEST_ASSERT(E_INVALIDARG == PAL_IIDFromString(W("{123456789abc-def0-1234-56789ABCDEF0}"), &result));
@@ -157,6 +157,21 @@ void test_guid()
     {
         count = PAL_StringFromGUID2(&guid, nullptr, (int32_t)array_size(str_guid) - 1);
         TEST_ASSERT(count == 0);
+    }
+    {
+        result = null_guid;
+        hr = PAL_CoCreateGuid(&result);
+        TEST_ASSERT(hr == S_OK);
+        TEST_ASSERT(0 != std::memcmp(&result, &null_guid, sizeof(result)));
+
+        // Confirm RFC-4122 version 4 random GUID.
+        const uint16_t mask1   = 0xf000; // b1111000000000000
+        const uint16_t version = 0x4000; // b0100000000000000
+        TEST_ASSERT((result.Data3 & mask1) == version);
+
+        const uint8_t mask2 = 0xc0; // b11000000
+        const uint8_t value = 0x80; // b10000000
+        TEST_ASSERT((result.Data4[0] & mask2) == value);
     }
 }
 

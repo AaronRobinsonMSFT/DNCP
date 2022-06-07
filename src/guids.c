@@ -26,6 +26,77 @@
 #include <dncp.h>
 #include "util.h"
 
+static bool get_random_data(size_t size, void* buffer)
+{
+    FILE* rnd = fopen("/dev/urandom", "r");
+    if (rnd == NULL)
+        return false;
+
+    bool result = true;
+    uint8_t* buffer_local = (uint8_t*)buffer;
+    size_t res;
+    size_t read_in = 0;
+    do
+    {
+        res = fread(
+            buffer_local,
+            size - read_in,
+            sizeof(*buffer_local),
+            rnd);
+        if (res == 0)
+        {
+            result = false;
+            break;
+        }
+
+        buffer_local += res;
+        read_in += res;
+    } while (read_in != size);
+
+    (void)fclose(rnd);
+    return result;
+}
+
+// See RFC-4122 section 4.4 on creation of random GUID.
+// https://www.ietf.org/rfc/rfc4122.txt
+//
+//    The version 4 UUID is meant for generating UUIDs from truly-random or
+//    pseudo-random numbers.
+//
+//    The algorithm is as follows:
+//
+//    o  Set the two most significant bits (bits 6 and 7) of the
+//       clock_seq_hi_and_reserved to zero and one, respectively.
+//
+//    o  Set the four most significant bits (bits 12 through 15) of the
+//       time_hi_and_version field to the 4-bit version number from
+//       Section 4.1.3.
+//
+//    o  Set all the other bits to randomly (or pseudo-randomly) chosen
+//       values.
+//
+HRESULT PAL_CoCreateGuid(GUID* guid)
+{
+    if (!get_random_data(sizeof(*guid), guid))
+        return E_FAIL;
+
+    {
+        // time_hi_and_version
+        const uint16_t mask  = 0xf000; // b1111000000000000
+        const uint16_t value = 0x4000; // b0100000000000000
+        guid->Data3 = (guid->Data3 & ~mask) | value;
+    }
+
+    {
+        // clock_seq_hi_and_reserved
+        const uint8_t mask  = 0xc0; // b11000000
+        const uint8_t value = 0x80; // b10000000
+        guid->Data4[0] = (guid->Data4[0] & ~mask) | value;
+    }
+
+    return S_OK;
+}
+
 BOOL PAL_IsEqualGUID(GUID const* g1, GUID const* g2)
 {
     return !memcmp(g1, g2, sizeof(*g1)) ? TRUE : FALSE;

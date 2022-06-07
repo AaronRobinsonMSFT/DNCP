@@ -70,6 +70,11 @@ UINT PAL_SysStringByteLen(BSTR a)
     return SysStringByteLen(a);
 }
 
+HRESULT PAL_CoCreateGuid(GUID* a)
+{
+    return CoCreateGuid(a);
+}
+
 BOOL PAL_IsEqualGUID(GUID const* a, GUID const* b)
 {
     return IsEqualGUID(a, b);

@@ -113,6 +113,7 @@ UINT PAL_SysStringByteLen(BSTR);
 // GUIDs
 //
 
+HRESULT PAL_CoCreateGuid(GUID*);
 BOOL PAL_IsEqualGUID(GUID const*, GUID const*);
 
 int32_t PAL_StringFromGUID2(GUID const*, LPOLESTR, int32_t);
