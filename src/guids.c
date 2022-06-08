@@ -22,15 +22,30 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <errno.h>
 #include <string.h>
 #include <dncp.h>
 #include "util.h"
 
 static bool get_random_data(size_t size, void* buffer)
 {
-    FILE* rnd = fopen("/dev/urandom", "r");
-    if (rnd == NULL)
-        return false;
+    int err;
+    FILE* rnd;
+    while (true)
+    {
+        // Read from non-blocking random device.
+        rnd = fopen("/dev/urandom", "r");
+        if (rnd != NULL)
+            break;
+
+        err = errno;
+
+        // If the error code is anything other than an
+        // interruption, the failure isn't something we
+        // can recover from.
+        if (err != EINTR)
+            return false;
+    }
 
     bool result = true;
     uint8_t* buffer_local = (uint8_t*)buffer;
