@@ -17,16 +17,14 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#include <Objbase.h>
+#include <combaseapi.h>
+
 #include <stdint.h>
 #include <stdlib.h>
-
-#ifdef _MSC_VER
-    #define NOMINMAX
-    #define WIN32_LEAN_AND_MEAN
-    #include <Windows.h>
-    #include <Objbase.h>
-    #include <combaseapi.h>
-#endif
 
 #include <dncp.h>
 
