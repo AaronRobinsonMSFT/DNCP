@@ -77,6 +77,9 @@
     } GUID;
 
     typedef GUID IID;
+
+    // 00000000-0000-0000-0000-000000000000
+    extern IID const GUID_NULL;
 #endif // DNCP_TYPEDEFS
 
 #ifdef __cplusplus
@@ -185,6 +188,73 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
         using LPSTARTUPINFOW = SIZE_T;
         using LPPROCESS_INFORMATION = SIZE_T;
         using LPSECURITY_ATTRIBUTES = SIZE_T;
-
     #endif // __cplusplus
 #endif // DNCP_INTERFACES
+
+#ifdef __cplusplus
+    namespace dncp
+    {
+        // Smart pointer for use with IUnknown based interfaces.
+        // It is based off of ATL:CComPtr<T> so adoption is easier.
+        template<typename T>
+        class com_ptr
+        {
+        public:
+            T* _p;
+
+        public:
+            com_ptr() = default;
+
+            com_ptr(T* t)
+                : _p{ t }
+            {
+                if (_p != nullptr)
+                    (void)_p->AddRef();
+            }
+
+            com_ptr(com_ptr const&) = delete;
+
+            com_ptr(com_ptr&& other)
+                : p{ other.Detach() }
+            { }
+
+            ~com_ptr() { Release(); }
+
+            com_ptr& operator=(com_ptr const&) = delete;
+
+            com_ptr& operator=(com_ptr&& other)
+            {
+                Attach(other.Detach());
+                return (*this);
+            }
+
+            operator T*() { return _p; }
+
+            T** operator&() { return &_p; }
+
+            T* operator->() { return _p; }
+
+            void Attach(T* t) noexcept
+            {
+                Release();
+                _p = t;
+            }
+
+            T* Detach() noexcept
+            {
+                T* tmp = _p;
+                _p = nullptr;
+                return tmp;
+            }
+
+            void Release() noexcept
+            {
+                if (_p != nullptr)
+                {
+                    (void)_p->Release();
+                    _p = nullptr;
+                }
+            }
+        };
+    }
+#endif // __cplusplus

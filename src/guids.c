@@ -27,6 +27,9 @@
 #include <dncp.h>
 #include "util.h"
 
+// 00000000-0000-0000-0000-000000000000
+IID const GUID_NULL = { 0x0, 0x0, 0x0, { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } };
+
 static bool get_random_data(size_t size, void* buffer)
 {
     int err;

@@ -114,7 +114,6 @@ void test_guid()
     int32_t count;
     GUID result;
     GUID guid = { 0x12345678, 0x9abc, 0xdef0, { 0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0 } };
-    GUID null_guid = { 0, 0, 0, { 0, 0, 0, 0, 0, 0, 0, 0 } };
 
     // Mixed case to validate parsing works.
     WCHAR const str_guid[] = W("{12345678-9abc-def0-1234-56789ABCDEF0}");
@@ -127,7 +126,7 @@ void test_guid()
     {
         hr = PAL_IIDFromString(nullptr, &result);
         TEST_ASSERT(hr == S_OK);
-        TEST_ASSERT(PAL_IsEqualGUID(&null_guid, &result));
+        TEST_ASSERT(PAL_IsEqualGUID(&GUID_NULL, &result));
     }
     {
         TEST_ASSERT(E_INVALIDARG == PAL_IIDFromString(W("{123456789abc-def0-1234-56789ABCDEF0}"), &result));
@@ -159,10 +158,10 @@ void test_guid()
         TEST_ASSERT(count == 0);
     }
     {
-        result = null_guid;
+        result = GUID_NULL;
         hr = PAL_CoCreateGuid(&result);
         TEST_ASSERT(hr == S_OK);
-        TEST_ASSERT(0 != std::memcmp(&result, &null_guid, sizeof(result)));
+        TEST_ASSERT(0 != std::memcmp(&result, &GUID_NULL, sizeof(result)));
 
         // Confirm RFC-4122 version 4 random GUID.
         const uint16_t mask1   = 0xf000; // b1111000000000000
@@ -187,12 +186,70 @@ void test_interfaces()
     }
 }
 
+using dncp::com_ptr;
+
+void test_com_ptr()
+{
+    struct : public IUnknown
+    {
+    public:
+        ULONG RefCount;
+
+    public: // IUnknown
+        virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID, void **)
+        {
+            return E_NOTIMPL;
+        }
+
+        virtual ULONG STDMETHODCALLTYPE AddRef( void)
+        {
+            return RefCount++;
+        }
+
+        virtual ULONG STDMETHODCALLTYPE Release( void)
+        {
+            return RefCount--;
+        }
+    } test_ptr{};
+
+    {
+        test_ptr.RefCount = 0;
+        {
+            com_ptr<IUnknown> t{ &test_ptr };
+            TEST_ASSERT(test_ptr.RefCount == 1);
+        }
+        TEST_ASSERT(test_ptr.RefCount == 0);
+    }
+    {
+        test_ptr.RefCount = 0;
+        com_ptr<IUnknown> t{ &test_ptr };
+        t.Release();
+        TEST_ASSERT(test_ptr.RefCount == 0 && t._p == nullptr);
+    }
+    {
+        test_ptr.RefCount = 0;
+        com_ptr<IUnknown> t{};
+        TEST_ASSERT(t._p == nullptr);
+        t.Attach(&test_ptr);
+        TEST_ASSERT(test_ptr.RefCount == 0 && t._p != nullptr);
+        TEST_ASSERT(&test_ptr == t.Detach());
+        TEST_ASSERT(test_ptr.RefCount == 0 && t._p == nullptr);
+    }
+    {
+        com_ptr<IUnknown> t{ &test_ptr };
+        t->QueryInterface(GUID_NULL, nullptr);
+        t->AddRef();
+        t->Release();
+    }
+}
+
 int main()
 {
     test_memory();
     test_bstr();
     test_guid();
     test_interfaces();
+    test_com_ptr();
 
     std::printf("Test pass: %zd / %zd\n", test_count - test_failure, test_count);
     return test_failure == 0

@@ -33,6 +33,8 @@
 
 #include <dncp.h>
 
+using dncp::com_ptr;
+
 #ifdef _MSC_VER
     #define EXPORT_API __declspec(dllexport)
 #else
@@ -123,16 +125,12 @@ EXTERN_C EXPORT_API HRESULT CreateComServer(REFIID riid, LPVOID *ppv)
     if (ppv == nullptr)
         return E_POINTER;
 
-    ComServer* server = new (std::nothrow) ComServer{};
+    com_ptr<ComServer> server;
+    server.Attach(new (std::nothrow) ComServer{});
     if (server == nullptr)
         return E_OUTOFMEMORY;
 
     HRESULT hr = server->QueryInterface(riid, ppv);
-
-    // The QueryInterface() will do an AddRef() if successful,
-    // so we can safely release the initial AddRef() here.
-    (void)server->Release();
-
     if (FAILED(hr))
         return hr;
 
