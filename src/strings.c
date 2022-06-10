@@ -17,9 +17,9 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#include <stdint.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <assert.h>
 #include <dncp.h>
 
 size_t PAL_wcslen(WCHAR const* str)
@@ -36,6 +36,7 @@ int PAL_wcscmp(WCHAR const* str1, WCHAR const* str2)
 {
     assert(str1 != NULL && str2 != NULL);
 
+    int i = 0;
     while (str1[i] == str2[i] && str1[i] != W('\0'))
         ++i;
 
@@ -58,7 +59,7 @@ WCHAR* PAL_wcsstr(WCHAR const* dest, WCHAR const* src)
         {
             if (src[i] == W('\0'))
             {
-                res = dest;
+                res = (WCHAR*)dest;
                 goto exit;
             }
             else if (dest[i] == W('\0'))
