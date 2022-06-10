@@ -38,6 +38,21 @@ void PAL_CoTaskMemFree(LPVOID a)
     CoTaskMemFree(a);
 }
 
+size_t PAL_wcslen(WCHAR const* a)
+{
+    return wcslen(a);
+}
+
+int PAL_wcscmp(WCHAR const* a, WCHAR const* b)
+{
+    return wcscmp(a, b);
+}
+
+WCHAR* PAL_wcsstr(WCHAR const* a, WCHAR const* b)
+{
+    return wcsstr(a, b);
+}
+
 BSTR PAL_SysAllocString(LPCOLESTR a)
 {
     return SysAllocString(a);

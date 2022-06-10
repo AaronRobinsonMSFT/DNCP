@@ -7,10 +7,11 @@ if(WIN32)
   )
 else()
   set(SOURCES
-    memory.c
     bstr.c
     guids.c
     interfaces.c
+    memory.c
+    strings.c
   )
   add_compile_definitions(
     DNCP_TYPEDEFS

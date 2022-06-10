@@ -55,6 +55,18 @@ constexpr size_t array_size_bytes(E const (&)[N])
     return N * sizeof(E);
 }
 
+template<size_t N>
+constexpr size_t string_length(WCHAR const (&)[N])
+{
+    return N - 1; // -1 for null
+}
+
+template<size_t N>
+constexpr size_t string_length(char const (&)[N])
+{
+    return N - 1; // -1 for null
+}
+
 void test_memory()
 {
     LPVOID p;
@@ -81,12 +93,75 @@ void test_memory()
     }
 }
 
+void test_strings()
+{
+    // PAL_wcslen
+    {
+        WCHAR const len_0[] = W("");
+        WCHAR const len_1[] = W("1");
+        WCHAR const len_2[] = W("12");
+        WCHAR const len_9[] = W("123456789");
+        WCHAR const embedded_null[] = { W('1'), W('2'), W('\0'), W('4'), W('\0') };
+
+        TEST_ASSERT(PAL_wcslen(len_0) == string_length(len_0));
+        TEST_ASSERT(PAL_wcslen(len_1) == string_length(len_1));
+        TEST_ASSERT(PAL_wcslen(len_2) == string_length(len_2));
+        TEST_ASSERT(PAL_wcslen(len_9) == string_length(len_9));
+        TEST_ASSERT(PAL_wcslen(embedded_null) == 2 && string_length(embedded_null) == 4);
+    }
+
+    // PAL_wcscmp
+    {
+        TEST_ASSERT(PAL_wcscmp(W(""), W("")) == 0);
+
+        WCHAR const aStr1[] = W("a");
+        WCHAR const aStr2[] = W("a");
+        WCHAR const AStr[] = W("A");
+        WCHAR const ZStr[] = W("Z");
+        TEST_ASSERT(PAL_wcscmp(aStr1, aStr2) == 0);
+        TEST_ASSERT(PAL_wcscmp(W(""), aStr1) == -1);
+        TEST_ASSERT(PAL_wcscmp(aStr1, W("")) == 1);
+        TEST_ASSERT(PAL_wcscmp(AStr, aStr1) == -1);
+        TEST_ASSERT(PAL_wcscmp(aStr1, AStr) == 1);
+        TEST_ASSERT(PAL_wcscmp(AStr, ZStr) == -1);
+        TEST_ASSERT(PAL_wcscmp(ZStr, AStr) == 1);
+
+        WCHAR const mixedStr1[] = W("aMqU");
+        WCHAR const mixedStr2[] = W("aMqu");
+        WCHAR const mixedStr3[] = W("aMq");
+        TEST_ASSERT(PAL_wcscmp(mixedStr1, mixedStr2) == -1);
+        TEST_ASSERT(PAL_wcscmp(mixedStr2, mixedStr1) == 1);
+        TEST_ASSERT(PAL_wcscmp(mixedStr3, mixedStr1) == -1);
+        TEST_ASSERT(PAL_wcscmp(mixedStr1, mixedStr3) == 1);
+    }
+
+    // PAL_wcsstr
+    {
+        WCHAR const find1[] = W("");
+        WCHAR const find2[] = W("5");
+        WCHAR const find3[] = W("5a");
+        WCHAR const find4[] = W("67890");
+        WCHAR const find5[] = W("1234567890");
+        WCHAR const find6[] = W("12345678901234567890");
+        WCHAR const str1[] = W("");
+        WCHAR const str2[] = W("1234567890");
+        TEST_ASSERT(PAL_wcsstr(str1, find1) == str1);
+        TEST_ASSERT(PAL_wcsstr(str1, find2) == NULL);
+        TEST_ASSERT(PAL_wcsstr(str2, find1) == str2);
+        TEST_ASSERT(PAL_wcsstr(str2, find2) == (str2 + 4));
+        TEST_ASSERT(PAL_wcsstr(str2, find3) == NULL);
+        TEST_ASSERT(PAL_wcsstr(str2, find4) == (str2 + 5));
+        TEST_ASSERT(PAL_wcsstr(str2, find5) == str2);
+        TEST_ASSERT(PAL_wcsstr(str2, find6) == NULL);
+    }
+}
+
 void test_bstr()
 {
     BSTR bstr;
     {
         WCHAR const expected[] = W("STRING");
-        size_t expected_len = array_size(expected) - 1; // -1 for null
+        size_t expected_len = string_length(expected);
         size_t expected_byte_len = expected_len * sizeof(OLECHAR);
 
         bstr = PAL_SysAllocString(expected);
@@ -97,7 +172,7 @@ void test_bstr()
     }
     {
         char const expected[] = "string";
-        size_t expected_byte_len = array_size(expected) - 1; // -1 for null
+        size_t expected_byte_len = string_length(expected);
         size_t expected_len = expected_byte_len / sizeof(OLECHAR);
 
         bstr = PAL_SysAllocStringByteLen(expected, (UINT)expected_byte_len);
@@ -108,7 +183,7 @@ void test_bstr()
     }
 }
 
-void test_guid()
+void test_guids()
 {
     HRESULT hr;
     int32_t count;
@@ -246,8 +321,9 @@ void test_com_ptr()
 int main()
 {
     test_memory();
+    test_strings();
     test_bstr();
-    test_guid();
+    test_guids();
     test_interfaces();
     test_com_ptr();
 

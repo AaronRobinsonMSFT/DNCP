@@ -1,4 +1,4 @@
-# COM Platform Abstraction Layer for .NET
+# .NET COM Platform Abstraction Layer
 
 A library to support porting C/C++ COM binaries from [.NET Framework][netfx_download] (Windows only) to a [.NET cross-platform][dotnet_download] environment.
 
@@ -72,6 +72,11 @@ These steps are the general process. Note that depending on how complex your pro
     ```
 
 An example of consumption can be found in the [scenario test project](./tests/scenario/comserver/CMakeLists.txt).
+
+## FAQs
+
+1. The implementation of some string functions don't check for `NULL` inputs, this makes the APIs less robust. Why don't they check for `NULL`?
+    - DNCP is designed to be a drop in replacement for the APIs on Win32. The intent to match them identically. This is reflected in the unit tests when they run on Windows.
 
 <!-- Links -->
 

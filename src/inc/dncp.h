@@ -104,6 +104,10 @@ void PAL_CoTaskMemFree(LPVOID);
     #define W(str)  u ## str
 #endif
 
+size_t PAL_wcslen(WCHAR const*);
+int PAL_wcscmp(WCHAR const*, WCHAR const*);
+WCHAR* PAL_wcsstr(WCHAR const*, WCHAR const*);
+
 // BSTR
 BSTR PAL_SysAllocString(LPCOLESTR);
 BSTR PAL_SysAllocStringLen(LPCOLESTR, UINT);

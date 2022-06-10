@@ -20,6 +20,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <limits.h>
 #include <string.h>
 #include <assert.h>
 #include <dncp.h>
@@ -85,10 +86,10 @@ static void FreeAlignedBstr(void* alloc)
 
 static UINT OLEStrLen(LPCOLESTR str)
 {
-    UINT len = 0;
-    while (*str++ != W('\0'))
-        len++;
-    return len;
+    assert(sizeof(str[0]) == sizeof(WCHAR));
+    size_t len = PAL_wcslen(str);
+    assert(len <= UINT_MAX);
+    return (UINT)len;
 }
 
 BSTR PAL_SysAllocString(LPCOLESTR str)
