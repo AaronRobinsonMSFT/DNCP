@@ -203,7 +203,7 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
             T* _p;
 
         public:
-            com_ptr() = default;
+            com_ptr() : _p{} {}
 
             com_ptr(T* t)
                 : _p{ t }
@@ -215,7 +215,7 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
             com_ptr(com_ptr const&) = delete;
 
             com_ptr(com_ptr&& other)
-                : p{ other.Detach() }
+                : _p{ other.Detach() }
             { }
 
             ~com_ptr() { Release(); }
