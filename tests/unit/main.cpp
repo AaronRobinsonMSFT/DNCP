@@ -91,6 +91,10 @@ void test_memory()
         p = PAL_CoTaskMemAlloc(will_overflow);
         TEST_ASSERT(p == nullptr);
     }
+    {
+        dncp::cotaskmem_ptr<void> smart_ptr1{ nullptr };
+        dncp::cotaskmem_ptr<int> smart_ptr2{ (int*)PAL_CoTaskMemAlloc(16) };
+    }
 }
 
 void test_strings()
@@ -182,7 +186,8 @@ void test_bstr()
         PAL_SysFreeString(bstr);
     }
     {
-        dncp::bstr_ptr smart_ptr{ PAL_SysAllocString(W("abcdefghijklmnopqrstuvwxyz")) };
+        dncp::bstr_ptr smart_ptr1{ nullptr };
+        dncp::bstr_ptr smart_ptr2{ PAL_SysAllocString(W("abcdefghijklmnopqrstuvwxyz")) };
     }
 }
 

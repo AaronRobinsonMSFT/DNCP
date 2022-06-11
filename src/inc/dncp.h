@@ -263,6 +263,14 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
             }
         };
 
+        // Smart pointer for CoTaskMem*
+        struct cotaskmem_deleter
+        {
+            void operator()(LPVOID p) { PAL_CoTaskMemFree(p); }
+        };
+        template<typename T>
+        using cotaskmem_ptr = std::unique_ptr<T, cotaskmem_deleter>;
+
         // Smart pointer for BSTR
         struct bstr_deleter
         {

@@ -34,6 +34,7 @@
 #include <dncp.h>
 
 using dncp::com_ptr;
+using dncp::cotaskmem_ptr;
 using dncp::bstr_ptr;
 
 #ifdef _MSC_VER
@@ -95,14 +96,15 @@ public: // IComServer
              || result == nullptr)
             return E_POINTER;
 
-        int32_t* res = (int32_t*)PAL_CoTaskMemAlloc(sizeof(int32_t) * length);
+        cotaskmem_ptr<int32_t> res{ (int32_t*)PAL_CoTaskMemAlloc(sizeof(int32_t) * length) };
         if (res == nullptr)
             return E_OUTOFMEMORY;
 
+        int32_t* res_raw = res.get();
         for (size_t i = 0; i < length; ++i)
-            res[i] = integers[i] * 2;
+            res_raw[i] = integers[i] * 2;
 
-        *result = res;
+        *result = res.release();
         return S_OK;
     }
 
