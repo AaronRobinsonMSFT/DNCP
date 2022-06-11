@@ -11,28 +11,17 @@ The following are required to consume DNCP.
 
 ## Build
 
-1) `cmake -S . -B artifacts`
-1) `cmake --build artifacts --target install`
+The root of the project contains a `dncp.proj` file that should be used to build. Directly using CMake is possible but since it is assume the .NET SDK is installed on the system it is recommended to use the `dotnet` command. The common `build`, `clean` and `test` commands are supported. For example, `dotnet build` will build the project.
 
 ## Test
 
-Unit test the library by running `dncp_test` from the `bin` directory under `artifacts`.
-
-Scenario test the library using `dotnet test`. Run the following command after building the library.
-
-Windows:
-
-`> dotnet test tests\scenario\ComClient`
-
-Non-Windows:
-
-`> dotnet test tests/scenario/ComClient`
+Unit and scenario test the library using `dotnet test`.
 
 ## Usage
 
 The recommended way to use DNCP is via [git submodules][git_submodules] and CMake.
 
-The `dncp.h` header contains consistent definitions of common COM APIs. All data types are identically named to those in official Windows' headers. All functions are prefixed with `PAL_` followed by the official Win32 name (for example, `SysAllocString` is `PAL_SysAllocString`). Ideally, all functions provided by DNCP replace the corresponding Win32 APIs as DNCP will forward to the Windows implementation when running on Windows &ndash; see [`windows.c`](./src/windows.c).
+The [`dncp.h`](./src/inc/dncp.h) header contains consistent definitions of common COM APIs. All data types are identically named to those in official Windows' headers. All functions are prefixed with `PAL_` followed by the official Win32 name (for example, `SysAllocString` is `PAL_SysAllocString`). Ideally, all functions provided by DNCP replace the corresponding Win32 APIs as DNCP will forward to the Windows implementation when running on Windows &ndash; see [`windows.c`](./src/windows.c).
 
 Users can set defines during compilation to tailor how they would like to develop their COM library.
 
@@ -52,7 +41,7 @@ These steps are the general process. Note that depending on how complex your pro
     add_subdirectory(DNCP/)
     ```
 
-1. Reference the [`dncp.h`](./src/inc/dncp.h) header and link the DNCP static library into the target project.
+1. Reference the `dncp.h` header and link the DNCP static library into the target project.
     ```c
     #include <dncp.h>
     ```

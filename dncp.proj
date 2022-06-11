@@ -1,0 +1,29 @@
+<Project>
+    <Import Project="Directory.Build.props" />
+
+    <Target Name="Build">
+        <Exec Command="cmake --build $(ArtifactsDir) --config $(Configuration) --target install" />
+        <Exec Command="dotnet build tests/scenario/ComClient -c $(Configuration)" />
+    </Target>
+
+    <Target Name="VSTest">
+        <Message Text="Running unit tests..." Importance="High" />
+        <Exec Command="$(ArtifactsDir)bin/dncp_test" />
+
+        <Message Text="Running scenario tests..." Importance="High" />
+        <Exec Command="dotnet test tests/scenario/ComClient -c $(Configuration)" />
+    </Target>
+
+    <Target Name="Clean">
+        <ItemGroup>
+            <Clean Include="$(ArtifactsDir)**/*.*" Exclude="$(ArtifactsDir).gitignore"/>
+        </ItemGroup>
+        <Delete Files="@(Clean)" />
+    </Target>
+
+    <Target Name="Restore">
+        <Exec Command="cmake -S $(RepoDir) -B $(ArtifactsDir)" />
+    </Target>
+
+    <Target Name="Rebuild" DependsOnTargets="Clean;Build" />
+</Project>
