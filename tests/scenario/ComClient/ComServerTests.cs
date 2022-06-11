@@ -28,7 +28,11 @@ namespace ComClient
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface IComServer
     {
-        void GuidToString(in Guid guid, [MarshalAs(UnmanagedType.BStr)] out string guidAsString);
+        [return: MarshalAs(UnmanagedType.BStr)]
+        string GuidToString(in Guid guid);
+
+        [return: MarshalAs(UnmanagedType.LPArray, SizeParamIndex=0)]
+        int[] DoubleIntegers(int length, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex=0)] int[] integers);
     }
 
     public static unsafe class ComServer
@@ -39,10 +43,23 @@ namespace ComClient
         public static void TestGuidToString(IComServer server)
         {
             var guid = Guid.NewGuid();
-            server.GuidToString(in guid, out string asStr);
+            string asStr = server.GuidToString(in guid);
 
             // The COM APIs being used convert GUIDs to uppercase.
             Assert.Equal(guid.ToString("B").ToUpper(), asStr);
+        }
+
+        public static void TestDoubleIntegers(IComServer server)
+        {
+            Assert.Throws<NullReferenceException>(() => server.DoubleIntegers(1, null!));
+
+            int[] ints = new[] { 1, 2, 3, 4, 5 };
+            int[] result = server.DoubleIntegers(ints.Length, ints);
+
+            for (int i = 0; i < ints.Length; ++i)
+            {
+                Assert.Equal(ints[i] * 2, result[i]);
+            }
         }
     }
 }

@@ -47,6 +47,7 @@ namespace ComClient
             }
 
             ComServer.TestGuidToString(server);
+            ComServer.TestDoubleIntegers(server);
         }
 
         private unsafe class ComWrappersImpl : ComWrappers
@@ -81,6 +82,7 @@ namespace ComClient
                     public delegate* unmanaged<void*, int> AddRef;
                     public delegate* unmanaged<void*, int> Release;
                     public delegate* unmanaged<void*, Guid*, void**, int> GuidToString;
+                    public delegate* unmanaged<void*, int, int*, int**, int> DoubleIntegers;
                 }
 
                 private readonly VtblPtr* instancePtr;
@@ -98,7 +100,8 @@ namespace ComClient
                         this.vtable->Release(this.instancePtr);
                 }
 
-                public void GuidToString(in Guid guid, [MarshalAs(UnmanagedType.BStr)] out string guidAsString)
+                [return: MarshalAs(UnmanagedType.BStr)]
+                public string GuidToString(in Guid guid)
                 {
                     int hr;
                     void* str = null;
@@ -109,7 +112,24 @@ namespace ComClient
                             Marshal.ThrowExceptionForHR(hr);
                     }
 
-                    guidAsString = Marshal.PtrToStringBSTR((IntPtr)str);
+                    return Marshal.PtrToStringBSTR((IntPtr)str);
+                }
+
+                [return: MarshalAs(UnmanagedType.LPArray, SizeParamIndex=0)]
+                public int[] DoubleIntegers(int length, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex=0)] int[] integers)
+                {
+                    int hr;
+                    int* res = null;
+                    fixed (int* ptr = integers)
+                    {
+                        hr = this.vtable->DoubleIntegers(this.instancePtr, length, ptr, &res);
+                        if (hr < 0)
+                            Marshal.ThrowExceptionForHR(hr);
+                    }
+
+                    int[] result = new Span<int>(res, length).ToArray();
+                    Marshal.FreeCoTaskMem((IntPtr)res);
+                    return result;
                 }
             }
         }

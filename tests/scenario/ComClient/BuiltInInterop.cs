@@ -37,6 +37,7 @@ namespace ComClient
 
             var server = (IComServer)Marshal.GetObjectForIUnknown(serverPtr);
             ComServer.TestGuidToString(server);
+            ComServer.TestDoubleIntegers(server);
         }
     }
 

@@ -34,6 +34,7 @@
 #include <dncp.h>
 
 using dncp::com_ptr;
+using dncp::bstr_ptr;
 
 #ifdef _MSC_VER
     #define EXPORT_API __declspec(dllexport)
@@ -48,7 +49,12 @@ struct IComServer : public IUnknown
 {
     virtual HRESULT STDMETHODCALLTYPE GuidToString(
         REFGUID guid,
-        BSTR *guidAsString) PURE;
+        BSTR* guidAsString) PURE;
+
+    virtual HRESULT STDMETHODCALLTYPE DoubleIntegers(
+        int32_t length,
+        int32_t* integers,
+        int32_t** result) PURE;
 };
 
 class ComServer final : IComServer
@@ -63,7 +69,7 @@ public:
 public: // IComServer
     virtual HRESULT STDMETHODCALLTYPE GuidToString(
         REFGUID guid,
-        BSTR *guidAsString)
+        BSTR* guidAsString)
     {
         if (guidAsString == nullptr)
             return E_POINTER;
@@ -72,11 +78,31 @@ public: // IComServer
         if (0 == PAL_StringFromGUID2(&guid, buffer.data(), (int32_t)buffer.size()))
             return E_FAIL;
 
-        BSTR bstr = PAL_SysAllocString(buffer.data());
+        bstr_ptr bstr{ PAL_SysAllocString(buffer.data()) };
         if (bstr == nullptr)
             return E_OUTOFMEMORY;
 
-        *guidAsString = bstr;
+        *guidAsString = bstr.release();
+        return S_OK;
+    }
+
+    virtual HRESULT STDMETHODCALLTYPE DoubleIntegers(
+        int32_t length,
+        int32_t* integers,
+        int32_t** result)
+    {
+        if ((integers == nullptr && length != 0)
+             || result == nullptr)
+            return E_POINTER;
+
+        int32_t* res = (int32_t*)PAL_CoTaskMemAlloc(sizeof(int32_t) * length);
+        if (res == nullptr)
+            return E_OUTOFMEMORY;
+
+        for (size_t i = 0; i < length; ++i)
+            res[i] = integers[i] * 2;
+
+        *result = res;
         return S_OK;
     }
 
