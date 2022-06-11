@@ -31,8 +31,10 @@ namespace ComClient
         [return: MarshalAs(UnmanagedType.BStr)]
         string GuidToString(in Guid guid);
 
-        [return: MarshalAs(UnmanagedType.LPArray, SizeParamIndex=0)]
-        int[] DoubleIntegers(int length, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex=0)] int[] integers);
+        void DoubleIntegers(
+            int length,
+            [MarshalAs(UnmanagedType.LPArray, SizeParamIndex=0)] int[] integers,
+            [MarshalAs(UnmanagedType.LPArray, SizeParamIndex=0)] out int[] result);
     }
 
     public static unsafe class ComServer
@@ -51,10 +53,10 @@ namespace ComClient
 
         public static void TestDoubleIntegers(IComServer server)
         {
-            Assert.Throws<NullReferenceException>(() => server.DoubleIntegers(1, null!));
+            Assert.Throws<NullReferenceException>(() => server.DoubleIntegers(1, null!, out int[] _));
 
             int[] ints = new[] { 1, 2, 3, 4, 5 };
-            int[] result = server.DoubleIntegers(ints.Length, ints);
+            server.DoubleIntegers(ints.Length, ints, out int[] result);
 
             for (int i = 0; i < ints.Length; ++i)
             {

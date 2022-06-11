@@ -115,8 +115,10 @@ namespace ComClient
                     return Marshal.PtrToStringBSTR((IntPtr)str);
                 }
 
-                [return: MarshalAs(UnmanagedType.LPArray, SizeParamIndex=0)]
-                public int[] DoubleIntegers(int length, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex=0)] int[] integers)
+                public void DoubleIntegers(
+                    int length,
+                    [MarshalAs(UnmanagedType.LPArray, SizeParamIndex=0)] int[] integers,
+                    [MarshalAs(UnmanagedType.LPArray, SizeParamIndex=0)] out int[] result)
                 {
                     int hr;
                     int* res = null;
@@ -127,9 +129,8 @@ namespace ComClient
                             Marshal.ThrowExceptionForHR(hr);
                     }
 
-                    int[] result = new Span<int>(res, length).ToArray();
+                    result = new Span<int>(res, length).ToArray();
                     Marshal.FreeCoTaskMem((IntPtr)res);
-                    return result;
                 }
             }
         }
