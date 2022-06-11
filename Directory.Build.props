@@ -1,6 +1,7 @@
 <Project>
     <PropertyGroup>
-        <ArtifactsDir>$(MSBuildThisFileDirectory)artifacts/</ArtifactsDir>
+        <RepoDir>$(MSBuildThisFileDirectory)</RepoDir>
+        <ArtifactsDir>$(RepoDir)artifacts/$(Configuration)/</ArtifactsDir>
 
         <BaseIntermediateOutputPath>$(ArtifactsDir)/obj/$(MSBuildProjectName)</BaseIntermediateOutputPath>
         <BaseOutputPath>$(ArtifactsDir)/bin/$(MSBuildProjectName)</BaseOutputPath>
