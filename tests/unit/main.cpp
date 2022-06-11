@@ -299,16 +299,16 @@ void test_com_ptr()
         test_ptr.RefCount = 0;
         com_ptr<IUnknown> t{ &test_ptr };
         t.Release();
-        TEST_ASSERT(test_ptr.RefCount == 0 && t._p == nullptr);
+        TEST_ASSERT(test_ptr.RefCount == 0 && t.p == nullptr);
     }
     {
         test_ptr.RefCount = 0;
         com_ptr<IUnknown> t{};
-        TEST_ASSERT(t._p == nullptr);
+        TEST_ASSERT(t.p == nullptr);
         t.Attach(&test_ptr);
-        TEST_ASSERT(test_ptr.RefCount == 0 && t._p != nullptr);
+        TEST_ASSERT(test_ptr.RefCount == 0 && t.p != nullptr);
         TEST_ASSERT(&test_ptr == t.Detach());
-        TEST_ASSERT(test_ptr.RefCount == 0 && t._p == nullptr);
+        TEST_ASSERT(test_ptr.RefCount == 0 && t.p == nullptr);
     }
     {
         com_ptr<IUnknown> t{ &test_ptr };

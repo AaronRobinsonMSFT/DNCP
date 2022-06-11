@@ -65,7 +65,7 @@ An example of consumption can be found in the [scenario test project](./tests/sc
 ## FAQs
 
 1. The implementation of some string functions don't check for `NULL` inputs, this makes the APIs less robust. Why don't they check for `NULL`?
-    - DNCP is designed to be a drop in replacement for the APIs on Win32. The intent to match them identically. This is reflected in the unit tests when they run on Windows.
+    - DNCP is designed to be a drop in replacement for the APIs on Win32. The intent is to match semantics identically. This is reflected in the unit tests when they run on Windows.
 
 <!-- Links -->
 

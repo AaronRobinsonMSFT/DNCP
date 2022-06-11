@@ -199,27 +199,27 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
     namespace dncp
     {
         // Smart pointer for use with IUnknown based interfaces.
-        // It is based off of ATL:CComPtr<T> so adoption is easier.
+        // It is based off of ATL::CComPtr<T> so adoption is easier.
         template<typename T>
         class com_ptr
         {
         public:
-            T* _p;
+            T* p;
 
         public:
-            com_ptr() : _p{} {}
+            com_ptr() : p{} {}
 
             com_ptr(T* t)
-                : _p{ t }
+                : p{ t }
             {
-                if (_p != nullptr)
-                    (void)_p->AddRef();
+                if (p != nullptr)
+                    (void)p->AddRef();
             }
 
             com_ptr(com_ptr const&) = delete;
 
             com_ptr(com_ptr&& other)
-                : _p{ other.Detach() }
+                : p{ other.Detach() }
             { }
 
             ~com_ptr() { Release(); }
@@ -232,31 +232,31 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
                 return (*this);
             }
 
-            operator T*() { return _p; }
+            operator T*() { return p; }
 
-            T** operator&() { return &_p; }
+            T** operator&() { return &p; }
 
-            T* operator->() { return _p; }
+            T* operator->() { return p; }
 
             void Attach(T* t) noexcept
             {
                 Release();
-                _p = t;
+                p = t;
             }
 
             T* Detach() noexcept
             {
-                T* tmp = _p;
-                _p = nullptr;
+                T* tmp = p;
+                p = nullptr;
                 return tmp;
             }
 
             void Release() noexcept
             {
-                if (_p != nullptr)
+                if (p != nullptr)
                 {
-                    (void)_p->Release();
-                    _p = nullptr;
+                    (void)p->Release();
+                    p = nullptr;
                 }
             }
         };
