@@ -1,17 +1,17 @@
 <Project>
-    <PropertyGroup>
-        <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-    </PropertyGroup>
-
     <Import Project="Directory.Build.props" />
 
     <Target Name="Build">
         <Exec Command="cmake --build $(ArtifactsDir) --config $(Configuration) --target install" />
+        <Exec Command="dotnet build tests/scenario/ComClient -c $(Configuration)" />
     </Target>
 
     <Target Name="VSTest">
         <Message Text="Running unit tests..." Importance="High" />
         <Exec Command="$(ArtifactsDir)bin/dncp_test" />
+
+        <Message Text="Running scenario tests..." Importance="High" />
+        <Exec Command="dotnet test tests/scenario/ComClient -c $(Configuration)" />
     </Target>
 
     <Target Name="Clean">

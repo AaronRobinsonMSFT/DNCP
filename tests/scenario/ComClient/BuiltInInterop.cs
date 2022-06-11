@@ -19,6 +19,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 
 using Xunit;
 
@@ -26,6 +27,7 @@ namespace ComClient
 {
     public unsafe class BuiltInInterop
     {
+        [SupportedOSPlatform("windows")]
         [WindowsOnlyFact]
         public void CallServer()
         {
