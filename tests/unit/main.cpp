@@ -181,6 +181,9 @@ void test_bstr()
         TEST_ASSERT(expected_len == PAL_SysStringLen(bstr));
         PAL_SysFreeString(bstr);
     }
+    {
+        dncp::bstr_ptr smart_ptr{ PAL_SysAllocString(W("abcdefghijklmnopqrstuvwxyz")) };
+    }
 }
 
 void test_guids()

@@ -196,6 +196,8 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
 #endif // DNCP_INTERFACES
 
 #ifdef __cplusplus
+    #include <memory>
+    #include <type_traits>
     namespace dncp
     {
         // Smart pointer for use with IUnknown based interfaces.
@@ -260,5 +262,12 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
                 }
             }
         };
+
+        // Smart pointer for BSTR
+        struct bstr_deleter
+        {
+            void operator()(BSTR b) { PAL_SysFreeString(b); }
+        };
+        using bstr_ptr = std::unique_ptr<std::remove_pointer<BSTR>::type, bstr_deleter>;
     }
 #endif // __cplusplus
