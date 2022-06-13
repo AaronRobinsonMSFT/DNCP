@@ -52,6 +52,10 @@ struct IComServer : public IUnknown
         REFGUID guid,
         BSTR* guidAsString) PURE;
 
+    virtual HRESULT STDMETHODCALLTYPE StringToGuid(
+        LPCWSTR guidAsString,
+        GUID* guid) PURE;
+
     virtual HRESULT STDMETHODCALLTYPE DoubleIntegers(
         int32_t length,
         int32_t* integers,
@@ -85,6 +89,13 @@ public: // IComServer
 
         *guidAsString = bstr.release();
         return S_OK;
+    }
+
+    virtual HRESULT STDMETHODCALLTYPE StringToGuid(
+        LPCWSTR guidAsString,
+        GUID* guid)
+    {
+        return PAL_IIDFromString(guidAsString, guid);
     }
 
     virtual HRESULT STDMETHODCALLTYPE DoubleIntegers(

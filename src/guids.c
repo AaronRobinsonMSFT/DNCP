@@ -157,6 +157,9 @@ static bool UUIDFromString(LPCOLESTR str, GUID* guid);
 
 HRESULT PAL_IIDFromString(LPCOLESTR str, IID* iid)
 {
+    if (iid == NULL)
+        return E_INVALIDARG;
+
     if (str == NULL)
     {
         (void)memset(iid, 0, sizeof(*iid));

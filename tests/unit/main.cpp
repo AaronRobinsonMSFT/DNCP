@@ -202,6 +202,9 @@ void test_guids()
     WCHAR const str_guid[] = W("{12345678-9abc-def0-1234-56789ABCDEF0}");
 
     {
+        hr = PAL_IIDFromString(str_guid, nullptr);
+        TEST_ASSERT(hr == E_INVALIDARG);
+
         hr = PAL_IIDFromString(str_guid, &result);
         TEST_ASSERT(hr == S_OK);
         TEST_ASSERT(PAL_IsEqualGUID(&guid, &result));

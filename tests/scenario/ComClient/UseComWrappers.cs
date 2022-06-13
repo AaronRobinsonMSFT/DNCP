@@ -82,6 +82,7 @@ namespace ComClient
                     public delegate* unmanaged<void*, int> AddRef;
                     public delegate* unmanaged<void*, int> Release;
                     public delegate* unmanaged<void*, Guid*, void**, int> GuidToString;
+                    public delegate* unmanaged<void*, char*, Guid*, int> StringToGuid;
                     public delegate* unmanaged<void*, int, int*, int**, int> DoubleIntegers;
                 }
 
@@ -113,6 +114,20 @@ namespace ComClient
                     }
 
                     return Marshal.PtrToStringBSTR((IntPtr)str);
+                }
+
+                public Guid StringToGuid([MarshalAs(UnmanagedType.LPWStr)] string? guidAsString)
+                {
+                    int hr;
+                    Guid res;
+                    fixed (char* ptr = guidAsString)
+                    {
+                        hr = this.vtable->StringToGuid(this.instancePtr, ptr, &res);
+                        if (hr < 0)
+                            Marshal.ThrowExceptionForHR(hr);
+                    }
+
+                    return res;
                 }
 
                 public void DoubleIntegers(
