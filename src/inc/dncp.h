@@ -148,7 +148,7 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
         using REFCLSID = CLSID const&;
 
         #define EXTERN_GUID(itf,l1,s1,s2,c1,c2,c3,c4,c5,c6,c7,c8) \
-            EXTERN_C __declspec(selectany) IID const itf = {l1,s1,s2,{c1,c2,c3,c4,c5,c6,c7,c8}}
+            constexpr IID itf = {l1,s1,s2,{c1,c2,c3,c4,c5,c6,c7,c8}}
 
         inline bool operator==(REFGUID a, REFGUID b)
         {
