@@ -112,7 +112,7 @@ public: // IComServer
             return E_OUTOFMEMORY;
 
         int32_t* res_raw = res.get();
-        for (size_t i = 0; i < length; ++i)
+        for (int32_t i = 0; i < length; ++i)
             res_raw[i] = integers[i] * 2;
 
         *result = res.release();

@@ -14,7 +14,5 @@ if(MSVC)
 else()
     add_compile_options(-Wall -Werror) # warning level 3 and all warnings as errors.
     add_compile_options(-Wno-unknown-pragmas) # ignore unknown pragmas.
-    add_compile_options(-Wno-pragma-pack) # ignore warnings about pragma pack.
     add_compile_options(-Wno-format-security) # ignore user define format concerns.
-    add_compile_options(-fdeclspec) # enable usage of declspec for "selectany" - COM annoyance.
 endif()

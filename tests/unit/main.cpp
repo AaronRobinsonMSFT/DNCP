@@ -170,8 +170,8 @@ void test_bstr()
 
         bstr = PAL_SysAllocString(expected);
         TEST_ASSERT(0 == std::memcmp(expected, bstr, array_size_bytes(expected)));
-        TEST_ASSERT(expected_len == PAL_SysStringLen(bstr));
-        TEST_ASSERT(expected_byte_len == PAL_SysStringByteLen(bstr));
+        TEST_ASSERT((int32_t)expected_len == PAL_SysStringLen(bstr));
+        TEST_ASSERT((int32_t)expected_byte_len == PAL_SysStringByteLen(bstr));
         PAL_SysFreeString(bstr);
     }
     {
@@ -181,8 +181,8 @@ void test_bstr()
 
         bstr = PAL_SysAllocStringByteLen(expected, (UINT)expected_byte_len);
         TEST_ASSERT(0 == std::memcmp(expected, bstr, array_size_bytes(expected)));
-        TEST_ASSERT(expected_byte_len == PAL_SysStringByteLen(bstr));
-        TEST_ASSERT(expected_len == PAL_SysStringLen(bstr));
+        TEST_ASSERT((int32_t)expected_byte_len == PAL_SysStringByteLen(bstr));
+        TEST_ASSERT((int32_t)expected_len == PAL_SysStringLen(bstr));
         PAL_SysFreeString(bstr);
     }
     {
@@ -226,7 +226,7 @@ void test_guids()
     {
         OLECHAR buffer[array_size(str_guid)];
         count = PAL_StringFromGUID2(&guid, buffer, (int32_t)array_size(buffer));
-        TEST_ASSERT(count == array_size(buffer));
+        TEST_ASSERT(count == (int32_t)array_size(buffer));
 
         // Convert from string back into GUID.
         hr = PAL_IIDFromString(buffer, &result);
@@ -236,7 +236,7 @@ void test_guids()
         // Convert back into GUID.
         OLECHAR buffer2[array_size(str_guid)];
         count = PAL_StringFromGUID2(&result, buffer2, (int32_t)array_size(buffer2));
-        TEST_ASSERT(count == array_size(buffer2));
+        TEST_ASSERT(count == (int32_t)array_size(buffer2));
         TEST_ASSERT(0 == std::memcmp(buffer, buffer2, array_size_bytes(buffer)));
     }
     {
