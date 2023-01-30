@@ -17,6 +17,9 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+#ifndef _SRC_INC_DNCP_H_
+#define _SRC_INC_DNCP_H_
+
 // Perform platform check
 #ifdef _MSC_VER
     #define DNCP_WINDOWS
@@ -162,13 +165,22 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
             return FALSE != PAL_IsEqualGUID(&a, &b);
         }
 
+        inline bool operator!=(REFGUID a, REFGUID b)
+        {
+            return !(a == b);
+        }
+
         // sal
         #define _In_
+        #define _In_z_
+        #define _In_opt_
+        #define _Inout_
         #define _Out_
         #define _Out_opt_
         #define _Out_writes_to_opt_(x,y)
         #define _Out_writes_to_(x,y)
         #define _COM_Outptr_
+        #define __RPC_FAR
         #define __RPC__deref_out_opt
 
         // COM Interface definitions
@@ -184,6 +196,8 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
 
         #define UNALIGNED
         #define PURE = 0
+
+        #define UNREFERENCED_PARAMETER(p) (void)p
 
         #include <unknwn.h>
 
@@ -286,3 +300,5 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
         using bstr_ptr = std::unique_ptr<std::remove_pointer<BSTR>::type, bstr_deleter>;
     }
 #endif // __cplusplus
+
+#endif // _SRC_INC_DNCP_H_
