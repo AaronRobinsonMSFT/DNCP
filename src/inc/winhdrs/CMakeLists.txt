@@ -3,6 +3,7 @@
 # headers for license details.
 
 set(WINHDRS_HEADERS
+    oaidl.h
     objidl.h
     ole2.h
     poppack.h

@@ -170,8 +170,8 @@ void test_bstr()
 
         bstr = PAL_SysAllocString(expected);
         TEST_ASSERT(0 == std::memcmp(expected, bstr, array_size_bytes(expected)));
-        TEST_ASSERT((int32_t)expected_len == PAL_SysStringLen(bstr));
-        TEST_ASSERT((int32_t)expected_byte_len == PAL_SysStringByteLen(bstr));
+        TEST_ASSERT((UINT)expected_len == PAL_SysStringLen(bstr));
+        TEST_ASSERT((UINT)expected_byte_len == PAL_SysStringByteLen(bstr));
         PAL_SysFreeString(bstr);
     }
     {
@@ -181,8 +181,8 @@ void test_bstr()
 
         bstr = PAL_SysAllocStringByteLen(expected, (UINT)expected_byte_len);
         TEST_ASSERT(0 == std::memcmp(expected, bstr, array_size_bytes(expected)));
-        TEST_ASSERT((int32_t)expected_byte_len == PAL_SysStringByteLen(bstr));
-        TEST_ASSERT((int32_t)expected_len == PAL_SysStringLen(bstr));
+        TEST_ASSERT((UINT)expected_byte_len == PAL_SysStringByteLen(bstr));
+        TEST_ASSERT((UINT)expected_len == PAL_SysStringLen(bstr));
         PAL_SysFreeString(bstr);
     }
     {

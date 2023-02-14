@@ -34,15 +34,23 @@
     typedef size_t SIZE_T;
 
     typedef uint8_t BYTE;
+    typedef char CHAR;
+    typedef int16_t SHORT;
     typedef uint16_t USHORT;
-    typedef int32_t UINT;
+    typedef int32_t INT;
+    typedef uint32_t UINT;
     typedef int32_t LONG;
     typedef uint32_t ULONG;
     typedef uint32_t ULONG32;
     typedef uint32_t DWORD;
+    typedef int64_t LONGLONG;
     typedef uint64_t UINT64;
     typedef uint64_t ULONG64;
     typedef uint64_t ULONGLONG;
+    typedef float FLOAT;
+    typedef double DOUBLE;
+    typedef int32_t SCODE;
+    typedef int32_t DATE;
 
 #ifdef DNCP_WINDOWS
     typedef wchar_t WCHAR;
@@ -67,6 +75,8 @@
     typedef int16_t VARIANT_BOOL;
     #define VARIANT_TRUE ((VARIANT_BOOL)-1)
     #define VARIANT_FALSE ((VARIANT_BOOL)0)
+
+    typedef unsigned short VARTYPE;
 
     typedef int32_t HRESULT;
     typedef void* HANDLE;
@@ -204,15 +214,235 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
         // Unusable COM and RPC types
         interface ITypeInfo;
         interface IStream;
-        struct VARIANT;
+        interface IDispatch;
         interface IRpcChannelBuffer;
+        interface IRecordInfo;
         using RPC_IF_HANDLE = void*;
+        struct SAFEARRAY;
 
         // Unusable Win32 types
         using LPDEBUG_EVENT = SIZE_T;
         using LPSTARTUPINFOW = SIZE_T;
         using LPPROCESS_INFORMATION = SIZE_T;
         using LPSECURITY_ATTRIBUTES = SIZE_T;
+
+        // OLE VARIANT types
+        typedef struct {
+            struct {
+                ULONG Lo;
+                LONG Hi;
+            } DUMMYSTRUCTNAME;
+            LONGLONG int64;
+        } CY;
+        typedef struct {
+            USHORT wReserved;
+            union {
+                struct {
+                    BYTE scale;
+                    BYTE sign;
+                } DUMMYSTRUCTNAME;
+                USHORT signscale;
+            } DUMMYUNIONNAME;
+            ULONG Hi32;
+            union {
+                struct {
+                    ULONG Lo32;
+                    ULONG Mid32;
+                } DUMMYSTRUCTNAME2;
+                ULONGLONG Lo64;
+            } DUMMYUNIONNAME2;
+        } DECIMAL;
+
+        enum VARENUM
+        {
+            VT_EMPTY = 0,
+            VT_NULL = 1,
+            VT_I2 = 2,
+            VT_I4 = 3,
+            VT_R4 = 4,
+            VT_R8 = 5,
+            VT_CY = 6,
+            VT_DATE = 7,
+            VT_BSTR = 8,
+            VT_DISPATCH = 9,
+            VT_ERROR = 10,
+            VT_BOOL = 11,
+            VT_VARIANT = 12,
+            VT_UNKNOWN = 13,
+            VT_DECIMAL = 14,
+            VT_I1 = 16,
+            VT_UI1 = 17,
+            VT_UI2 = 18,
+            VT_UI4 = 19,
+            VT_I8 = 20,
+            VT_UI8 = 21,
+            VT_INT = 22,
+            VT_UINT = 23,
+            VT_VOID = 24,
+            VT_HRESULT = 25,
+            VT_PTR = 26,
+            VT_SAFEARRAY = 27,
+            VT_CARRAY = 28,
+            VT_USERDEFINED = 29,
+            VT_LPSTR = 30,
+            VT_LPWSTR = 31,
+            VT_RECORD = 36,
+            VT_INT_PTR = 37,
+            VT_UINT_PTR = 38,
+            VT_FILETIME = 64,
+            VT_BLOB = 65,
+            VT_STREAM = 66,
+            VT_STORAGE = 67,
+            VT_STREAMED_OBJECT = 68,
+            VT_STORED_OBJECT = 69,
+            VT_BLOB_OBJECT = 70,
+            VT_CF = 71,
+            VT_CLSID = 72,
+            VT_VERSIONED_STREAM = 73,
+            VT_BSTR_BLOB = 0xfff,
+            VT_VECTOR = 0x1000,
+            VT_ARRAY = 0x2000,
+            VT_BYREF = 0x4000,
+            VT_RESERVED = 0x8000,
+            VT_ILLEGAL = 0xffff,
+            VT_ILLEGALMASKED = 0xfff,
+            VT_TYPEMASK = 0xfff
+        };
+
+        typedef struct tagVARIANT {
+            union {
+                struct __tagVARIANT {
+                    VARTYPE vt;
+                    uint16_t wReserved1;
+                    uint16_t wReserved2;
+                    uint16_t wReserved3;
+                    union {
+                        LONGLONG llVal;
+                        LONG lVal;
+                        BYTE bVal;
+                        SHORT iVal;
+                        FLOAT fltVal;
+                        DOUBLE dblVal;
+                        VARIANT_BOOL boolVal;
+                        VARIANT_BOOL __OBSOLETE__VARIANT_BOOL;
+                        SCODE scode;
+                        CY cyVal;
+                        DATE date;
+                        BSTR bstrVal;
+                        IUnknown *punkVal;
+                        IDispatch *pdispVal;
+                        SAFEARRAY *parray;
+                        BYTE *pbVal;
+                        SHORT *piVal;
+                        LONG *plVal;
+                        LONGLONG *pllVal;
+                        FLOAT *pfltVal;
+                        DOUBLE *pdblVal;
+                        VARIANT_BOOL *pboolVal;
+                        VARIANT_BOOL *__OBSOLETE__VARIANT_PBOOL;
+                        SCODE *pscode;
+                        CY *pcyVal;
+                        DATE *pdate;
+                        BSTR *pbstrVal;
+                        IUnknown **ppunkVal;
+                        IDispatch **ppdispVal;
+                        SAFEARRAY **pparray;
+                        struct tagVARIANT *pvarVal;
+                        PVOID byref;
+                        CHAR cVal;
+                        USHORT uiVal;
+                        ULONG ulVal;
+                        ULONGLONG ullVal;
+                        INT intVal;
+                        UINT uintVal;
+                        DECIMAL *pdecVal;
+                        CHAR *pcVal;
+                        USHORT *puiVal;
+                        ULONG *pulVal;
+                        ULONGLONG *pullVal;
+                        INT *pintVal;
+                        UINT *puintVal;
+                        struct __tagBRECORD {
+                            PVOID pvRecord;
+                            IRecordInfo *pRecInfo;
+                        } n4;
+                    } n3;
+                } n2;
+                DECIMAL decVal;
+            } n1;
+        } VARIANT;
+
+        #define V_UNION(X, Y)   ((X)->n1.n2.n3.Y)
+        #define V_VT(X)         ((X)->n1.n2.vt)
+        #define V_RECORDINFO(X) ((X)->n1.n2.n3.brecVal.pRecInfo)
+        #define V_RECORD(X)     ((X)->n1.n2.n3.brecVal.pvRecord)
+        #define V_DECIMAL(X)    ((X)->n1.decVal)
+
+        // VARIANT access macros
+        #define V_ISBYREF(X)     (V_VT(X)&VT_BYREF)
+        #define V_ISARRAY(X)     (V_VT(X)&VT_ARRAY)
+        #define V_ISVECTOR(X)    (V_VT(X)&VT_VECTOR)
+        #define V_NONE(X)        V_I2(X)
+
+        #define V_UI1(X)         V_UNION(X, bVal)
+        #define V_UI1REF(X)      V_UNION(X, pbVal)
+        #define V_I2(X)          V_UNION(X, iVal)
+        #define V_I2REF(X)       V_UNION(X, piVal)
+        #define V_I4(X)          V_UNION(X, lVal)
+        #define V_I4REF(X)       V_UNION(X, plVal)
+        #define V_I8(X)          V_UNION(X, llVal)
+        #define V_I8REF(X)       V_UNION(X, pllVal)
+        #define V_R4(X)          V_UNION(X, fltVal)
+        #define V_R4REF(X)       V_UNION(X, pfltVal)
+        #define V_R8(X)          V_UNION(X, dblVal)
+        #define V_R8REF(X)       V_UNION(X, pdblVal)
+        #define V_I1(X)          V_UNION(X, cVal)
+        #define V_I1REF(X)       V_UNION(X, pcVal)
+        #define V_UI2(X)         V_UNION(X, uiVal)
+        #define V_UI2REF(X)      V_UNION(X, puiVal)
+        #define V_UI4(X)         V_UNION(X, ulVal)
+        #define V_UI4REF(X)      V_UNION(X, pulVal)
+        #define V_UI8(X)         V_UNION(X, ullVal)
+        #define V_UI8REF(X)      V_UNION(X, pullVal)
+        #define V_INT(X)         V_UNION(X, intVal)
+        #define V_INTREF(X)      V_UNION(X, pintVal)
+        #define V_UINT(X)        V_UNION(X, uintVal)
+        #define V_UINTREF(X)     V_UNION(X, puintVal)
+
+        #if INTPTR_MAX == INT64_MAX
+            #define V_INT_PTR(X)        V_UNION(X, llVal)
+            #define V_UINT_PTR(X)       V_UNION(X, ullVal)
+            #define V_INT_PTRREF(X)     V_UNION(X, pllVal)
+            #define V_UINT_PTRREF(X)    V_UNION(X, pullVal)
+        #elif INTPTR_MAX == INT32_MAX
+            #define V_INT_PTR(X)        V_UNION(X, lVal)
+            #define V_UINT_PTR(X)       V_UNION(X, ulVal)
+            #define V_INT_PTRREF(X)     V_UNION(X, plVal)
+            #define V_UINT_PTRREF(X)    V_UNION(X, pulVal)
+        #else
+            #error "Unknown pointer size"
+        #endif
+
+        #define V_CY(X)          V_UNION(X, cyVal)
+        #define V_CYREF(X)       V_UNION(X, pcyVal)
+        #define V_DATE(X)        V_UNION(X, date)
+        #define V_DATEREF(X)     V_UNION(X, pdate)
+        #define V_BSTR(X)        V_UNION(X, bstrVal)
+        #define V_BSTRREF(X)     V_UNION(X, pbstrVal)
+        #define V_DISPATCH(X)    V_UNION(X, pdispVal)
+        #define V_DISPATCHREF(X) V_UNION(X, ppdispVal)
+        #define V_ERROR(X)       V_UNION(X, scode)
+        #define V_ERRORREF(X)    V_UNION(X, pscode)
+        #define V_BOOL(X)        V_UNION(X, boolVal)
+        #define V_BOOLREF(X)     V_UNION(X, pboolVal)
+        #define V_UNKNOWN(X)     V_UNION(X, punkVal)
+        #define V_UNKNOWNREF(X)  V_UNION(X, ppunkVal)
+        #define V_VARIANTREF(X)  V_UNION(X, pvarVal)
+        #define V_ARRAY(X)       V_UNION(X, parray)
+        #define V_ARRAYREF(X)    V_UNION(X, pparray)
+        #define V_BYREF(X)       V_UNION(X, byref)
+
+        #define V_DECIMALREF(X)  V_UNION(X, pdecVal)
     #endif // __cplusplus
 #endif // DNCP_INTERFACES
 
