@@ -75,7 +75,7 @@
     typedef int16_t VARIANT_BOOL;
     #define VARIANT_TRUE ((VARIANT_BOOL)-1)
     #define VARIANT_FALSE ((VARIANT_BOOL)0)
-    
+
     typedef unsigned short VARTYPE;
 
     typedef int32_t HRESULT;
@@ -226,16 +226,15 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
         using LPPROCESS_INFORMATION = SIZE_T;
         using LPSECURITY_ATTRIBUTES = SIZE_T;
 
-        typedef struct
-        {
+        // OLE VARIANT types
+        typedef struct {
             struct {
                 ULONG Lo;
-                LONG      Hi;
+                LONG Hi;
             } DUMMYSTRUCTNAME;
             LONGLONG int64;
         } CY;
-        typedef struct
-        {
+        typedef struct {
             USHORT wReserved;
             union {
                 struct {
@@ -310,18 +309,14 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
             VT_TYPEMASK = 0xfff
         };
 
-        typedef struct tagVARIANT
-        {
-            union 
-            {
-                struct __tagVARIANT
-                {
+        typedef struct tagVARIANT {
+            union {
+                struct __tagVARIANT {
                     VARTYPE vt;
                     uint16_t wReserved1;
                     uint16_t wReserved2;
                     uint16_t wReserved3;
-                    union 
-                    {
+                    union {
                         LONGLONG llVal;
                         LONG lVal;
                         BYTE bVal;
@@ -367,8 +362,7 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
                         ULONGLONG *pullVal;
                         INT *pintVal;
                         UINT *puintVal;
-                        struct __tagBRECORD
-                        {
+                        struct __tagBRECORD {
                             PVOID pvRecord;
                             IRecordInfo *pRecInfo;
                         } n4;
@@ -384,8 +378,7 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
         #define V_RECORD(X)     ((X)->n1.n2.n3.brecVal.pvRecord)
         #define V_DECIMAL(X)    ((X)->n1.decVal)
 
-        /* Variant access macros
-        */
+        // VARIANT access macros
         #define V_ISBYREF(X)     (V_VT(X)&VT_BYREF)
         #define V_ISARRAY(X)     (V_VT(X)&VT_ARRAY)
         #define V_ISVECTOR(X)    (V_VT(X)&VT_VECTOR)
