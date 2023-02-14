@@ -20,6 +20,10 @@ target_include_directories(winhdrs INTERFACE
   $<INSTALL_INTERFACE:include/winhdrs>
 )
 
+target_compile_definitions(winhdrs INTERFACE
+  DNCP_TYPEDEFS
+  DNCP_WINHDRS)
+
 install(FILES ${WINHDRS_HEADERS}
   DESTINATION include/winhdrs
 )

@@ -13,10 +13,6 @@ else()
     memory.c
     strings.c
   )
-  add_compile_definitions(
-    DNCP_TYPEDEFS
-    DNCP_WINHDRS
-  )
 endif()
 
 set(HEADERS
@@ -38,15 +34,15 @@ target_include_directories(
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc>
   $<INSTALL_INTERFACE:include>)
 
+# Chain in the Windows headers interface
+add_subdirectory(inc/winhdrs)
+
 if(NOT WIN32)
   # Marked private because consumption of the Windows' headers is
   # a build implementation detail and shouldn't impose on the consumer
   # of dncp.
-  target_include_directories(dncp PRIVATE ./inc/winhdrs)
+  target_link_libraries(dncp PRIVATE dncp::winhdrs)
 endif()
-
-# Chain in the Windows headers interface
-add_subdirectory(inc/winhdrs)
 
 install(TARGETS dncp EXPORT dncp
   PUBLIC_HEADER DESTINATION include
