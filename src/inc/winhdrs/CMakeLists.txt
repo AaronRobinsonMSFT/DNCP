@@ -13,8 +13,9 @@ set(WINHDRS_HEADERS
     unknwn.h
     winerror.h)
 
-add_library(dncp_winhdrs INTERFACE)
-target_include_directories(dncp_winhdrs INTERFACE
+add_library(winhdrs INTERFACE)
+add_library(dncp::winhdrs ALIAS winhdrs)
+target_include_directories(winhdrs INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<INSTALL_INTERFACE:include/winhdrs>
 )
@@ -22,3 +23,7 @@ target_include_directories(dncp_winhdrs INTERFACE
 install(FILES ${WINHDRS_HEADERS}
   DESTINATION include/winhdrs
 )
+
+install(TARGETS winhdrs EXPORT winhdrs INCLUDES DESTINATION include/winhdrs)
+
+install(EXPORT winhdrs NAMESPACE dncp:: FILE winhdrs.cmake DESTINATION lib/cmake/dncp)
