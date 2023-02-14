@@ -16,8 +16,8 @@ if(NOT WIN32)
   )
 
   # Include the exported headers for non-Windows building.
-  target_link_libraries(dncp_test dncp_winhdrs)
+  target_link_libraries(dncp_test dncp::winhdrs)
 endif()
 
-target_link_libraries(dncp_test dncp)
+target_link_libraries(dncp_test dncp::dncp)
 install(TARGETS dncp_test)

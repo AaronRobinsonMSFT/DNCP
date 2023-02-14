@@ -32,7 +32,11 @@ add_library(dncp
 add_library(dncp::dncp ALIAS dncp)
 
 set_target_properties(dncp PROPERTIES PUBLIC_HEADER inc/dncp.h)
-target_include_directories(dncp PRIVATE ./inc)
+target_include_directories(
+  dncp
+  PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc>
+  $<INSTALL_INTERFACE:include>)
 
 if(NOT WIN32)
   # Marked private because consumption of the Windows' headers is
