@@ -224,7 +224,7 @@ static uint32_t ParseHexToValue(LPCOLESTR* pstr, size_t sizeInBytes, WCHAR delim
     *valid = true;
 
     // A single byte requires two hexadecimal values.
-    uint32_t val;
+    uint32_t val = 0;
     for (size_t count = 0; count < (sizeInBytes * 2); count++, (*pstr)++)
     {
         OLECHAR ch = (*pstr)[0];
