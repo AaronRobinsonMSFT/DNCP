@@ -11,16 +11,11 @@ add_library(comserver
 )
 
 if(NOT WIN32)
-  add_compile_definitions(
-    DNCP_TYPEDEFS
-    DNCP_WINHDRS
-  )
-
   # Include the exported headers for non-Windows building.
-  target_link_libraries(comserver dncp_winhdrs)
+  target_link_libraries(comserver dncp::winhdrs)
 endif()
 
-target_link_libraries(comserver dncp)
+target_link_libraries(comserver dncp::dncp)
 install(TARGETS comserver
   DESTINATION bin
 )

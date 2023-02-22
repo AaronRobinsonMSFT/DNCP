@@ -22,7 +22,7 @@
     </Target>
 
     <Target Name="Restore">
-        <Exec Command="cmake -S $(RepoDir) -B $(ArtifactsDir)" />
+        <Exec Command="cmake -S $(RepoDir) -B $(ArtifactsDir) -DCMAKE_BUILD_TYPE=$(Configuration)" />
     </Target>
 
     <Target Name="Rebuild" DependsOnTargets="Clean;Build" />
