@@ -19,6 +19,7 @@
 
 #include <cassert>
 #include <cstdint>
+#include <cstddef>
 #include <atomic>
 #include <new>
 #include <array>
