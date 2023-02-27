@@ -80,7 +80,7 @@ public: // IComServer
         if (guidAsString == nullptr)
             return E_POINTER;
 
-        std::array<WCHAR, 64> buffer;
+        std::array<WCHAR, 64> buffer{};
         if (0 == PAL_StringFromGUID2(&guid, buffer.data(), (int32_t)buffer.size()))
             return E_FAIL;
 

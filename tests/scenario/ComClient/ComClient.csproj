@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="$(ArtifactsDir)bin/*comserver.*">
+    <None Include="$(BaseArtifactsPath)/bin/*comserver.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
