@@ -38,6 +38,7 @@
     typedef int16_t SHORT;
     typedef uint16_t USHORT;
     typedef int32_t INT;
+    typedef int32_t INT32;
     typedef uint32_t UINT;
     typedef int32_t LONG;
     typedef uint32_t ULONG;
@@ -191,6 +192,16 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
         #define _Out_writes_to_(x,y)
         #define _COM_Outptr_
         #define __RPC_FAR
+        #define __RPC_USER
+        #define __RPC__in
+        #define __RPC__in_xcount(x)
+        #define __RPC__in_ecount_full(x)
+        #define __RPC__in_opt
+        #define __RPC__inout
+        #define __RPC__inout_xcount(x)
+        #define __RPC__out
+        #define __RPC__out_ecount_part(x,y)
+        #define __RPC__deref_out_ecount_full_opt(x)
         #define __RPC__deref_out_opt
 
         // COM Interface definitions
