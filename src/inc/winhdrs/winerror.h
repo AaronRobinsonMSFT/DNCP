@@ -22,6 +22,7 @@
 
 #define SEVERITY_SUCCESS    0
 #define SEVERITY_ERROR      1
+#define FACILITY_ITF        4
 #define FACILITY_WIN32      7
 
 #define MAKE_HRESULT(sev,fac,code) \
