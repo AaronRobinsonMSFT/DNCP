@@ -496,11 +496,11 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
                 return (*this);
             }
 
-            operator T*() const { return p; }
+            operator T*() { return p; }
 
-            T** operator&() const { return &p; }
+            T** operator&() { return &p; }
 
-            T* operator->() const { return p; }
+            T* operator->() { return p; }
 
             void Attach(T* t) noexcept
             {
