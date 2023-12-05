@@ -168,7 +168,7 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
                 EXTERN_C constexpr IID itf = {l1,s1,s2,{c1,c2,c3,c4,c5,c6,c7,c8}}
         #else
             #define EXTERN_GUID(itf,l1,s1,s2,c1,c2,c3,c4,c5,c6,c7,c8) \
-                EXTERN_C IID itf
+                EXTERN_C const IID itf
         #endif // !DNCP_DEFINE_GUID
 
         inline bool operator==(REFGUID a, REFGUID b)
