@@ -242,7 +242,7 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
 
         // Unusable COM and RPC types
         struct tagSTATSTG;
-        using STATSTG = STATSTG;
+        using STATSTG = tagSTATSTG;
         interface ITypeInfo;
         interface IDispatch;
         interface IRpcChannelBuffer;
