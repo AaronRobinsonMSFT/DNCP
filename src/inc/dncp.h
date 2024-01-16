@@ -202,6 +202,7 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
         #define _In_
         #define _In_z_
         #define _In_opt_
+        #define _In_reads_bytes_(x)
         #define _Inout_
         #define _Out_
         #define _Out_opt_
