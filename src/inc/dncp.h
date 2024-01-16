@@ -96,18 +96,26 @@
 
     typedef union {
         struct {
+#ifdef DNCP_BIG_ENDIAN
+            LONG HighPart;
+            DWORD LowPart;
+#else
             DWORD LowPart;
             LONG HighPart;
+#endif
         } u;
         LONGLONG QuadPart;
     } LARGE_INTEGER;
 
-    typedef union
-    {
-        struct
-        {
+    typedef union {
+        struct {
+#ifdef DNCP_BIG_ENDIAN
+            DWORD HighPart;
+            DWORD LowPart;
+#else
             DWORD LowPart;
             DWORD HighPart;
+#endif
         } u;
         ULONGLONG QuadPart;
     } ULARGE_INTEGER;
@@ -234,7 +242,7 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
 
         // Unusable COM and RPC types
         struct tagSTATSTG;
-        typedef struct tagSTATSTG STATSTG;
+        using STATSTG = STATSTG;
         interface ITypeInfo;
         interface IDispatch;
         interface IRpcChannelBuffer;
@@ -249,7 +257,7 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
         using LPSECURITY_ATTRIBUTES = SIZE_T;
 
         // Other COM interfaces
-        #include <objidlbase.h>
+        #include <objidl.h>
 
         // OLE VARIANT types
         typedef struct {

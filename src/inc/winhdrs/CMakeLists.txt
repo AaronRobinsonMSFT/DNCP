@@ -25,6 +25,11 @@ target_compile_definitions(winhdrs INTERFACE
   DNCP_TYPEDEFS
   DNCP_WINHDRS)
 
+if (CMAKE_C_BYTE_ORDER STREQUAL "BIG_ENDIAN")
+  target_compile_definitions(winhdrs INTERFACE
+    DNCP_BIG_ENDIAN)
+endif()
+
 install(FILES ${WINHDRS_HEADERS}
   DESTINATION include/winhdrs
 )
