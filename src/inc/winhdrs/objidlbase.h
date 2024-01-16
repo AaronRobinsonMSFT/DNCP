@@ -62,47 +62,6 @@ EXTERN_C const IID IID_ISequentialStream;
 /* interface IStream */
 /* [unique][uuid][object] */ 
 
-typedef struct tagSTATSTG
-    {
-    LPOLESTR pwcsName;
-    DWORD type;
-    ULARGE_INTEGER cbSize;
-    FILETIME mtime;
-    FILETIME ctime;
-    FILETIME atime;
-    DWORD grfMode;
-    DWORD grfLocksSupported;
-    CLSID clsid;
-    DWORD grfStateBits;
-    DWORD reserved;
-    } 	STATSTG;
-
-typedef 
-enum tagSTGTY
-    {
-        STGTY_STORAGE	= 1,
-        STGTY_STREAM	= 2,
-        STGTY_LOCKBYTES	= 3,
-        STGTY_PROPERTY	= 4
-    } 	STGTY;
-
-typedef 
-enum tagSTREAM_SEEK
-    {
-        STREAM_SEEK_SET	= 0,
-        STREAM_SEEK_CUR	= 1,
-        STREAM_SEEK_END	= 2
-    } 	STREAM_SEEK;
-
-typedef 
-enum tagLOCKTYPE
-    {
-        LOCK_WRITE	= 1,
-        LOCK_EXCLUSIVE	= 2,
-        LOCK_ONLYONCE	= 4
-    } 	LOCKTYPE;
-
-
 EXTERN_C const IID IID_IStream;
     
     MIDL_INTERFACE("0000000c-0000-0000-C000-000000000046")

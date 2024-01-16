@@ -94,12 +94,6 @@
     // 00000000-0000-0000-0000-000000000000
     extern IID const GUID_NULL;
 
-    typedef struct
-    {
-        DWORD dwLowDateTime;
-        DWORD dwHighDateTime;
-    } FILETIME;
-
     typedef union {
         struct {
             DWORD LowPart;
@@ -217,6 +211,7 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
         #define _COM_Outptr_
         #define __RPC_FAR
         #define __RPC__deref_out_opt
+        #define __RPC__out
 
         // COM Interface definitions
         #define __uuidof(type) IID_##type
@@ -235,9 +230,10 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
         #define UNREFERENCED_PARAMETER(p) (void)p
 
         #include <unknwn.h>
-        #include <objidlbase.h>
 
         // Unusable COM and RPC types
+        struct tagSTATSTG;
+        typedef struct tagSTATSTG STATSTG;
         interface ITypeInfo;
         interface IDispatch;
         interface IRpcChannelBuffer;
@@ -250,6 +246,9 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
         using LPSTARTUPINFOW = SIZE_T;
         using LPPROCESS_INFORMATION = SIZE_T;
         using LPSECURITY_ATTRIBUTES = SIZE_T;
+
+        // Other COM interfaces
+        #include <objidlbase.h>
 
         // OLE VARIANT types
         typedef struct {
