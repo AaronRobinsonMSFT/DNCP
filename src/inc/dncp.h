@@ -94,6 +94,20 @@
     // 00000000-0000-0000-0000-000000000000
     extern IID const GUID_NULL;
 
+    typedef struct
+    {
+        DWORD dwLowDateTime;
+        DWORD dwHighDateTime;
+    } FILETIME;
+
+    typedef union {
+        struct {
+            DWORD LowPart;
+            LONG HighPart;
+        } u;
+        LONGLONG QuadPart;
+    } LARGE_INTEGER;
+
     typedef union
     {
         struct
@@ -198,6 +212,7 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
         #define _Out_
         #define _Out_opt_
         #define _Out_writes_to_opt_(x,y)
+        #define _Out_writes_bytes_to(x, y)
         #define _Out_writes_to_(x,y)
         #define _COM_Outptr_
         #define __RPC_FAR
