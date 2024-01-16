@@ -93,6 +93,16 @@
 
     // 00000000-0000-0000-0000-000000000000
     extern IID const GUID_NULL;
+
+    typedef
+    {
+        struct
+        {
+            DWORD LowPart;
+            DWORD HighPart;
+        } u;
+        ULONGLONG QuadPart;
+    } ULARGE_INTEGER;
 #endif // DNCP_TYPEDEFS
 
 #ifdef __cplusplus
@@ -210,10 +220,10 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
         #define UNREFERENCED_PARAMETER(p) (void)p
 
         #include <unknwn.h>
+        #include <objidlbase.h>
 
         // Unusable COM and RPC types
         interface ITypeInfo;
-        interface IStream;
         interface IDispatch;
         interface IRpcChannelBuffer;
         interface IRecordInfo;
