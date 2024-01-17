@@ -94,6 +94,32 @@
 
     // 00000000-0000-0000-0000-000000000000
     extern IID const GUID_NULL;
+
+    typedef union {
+        struct {
+#ifdef DNCP_BIG_ENDIAN
+            LONG HighPart;
+            DWORD LowPart;
+#else
+            DWORD LowPart;
+            LONG HighPart;
+#endif
+        } u;
+        LONGLONG QuadPart;
+    } LARGE_INTEGER;
+
+    typedef union {
+        struct {
+#ifdef DNCP_BIG_ENDIAN
+            DWORD HighPart;
+            DWORD LowPart;
+#else
+            DWORD LowPart;
+            DWORD HighPart;
+#endif
+        } u;
+        ULONGLONG QuadPart;
+    } ULARGE_INTEGER;
 #endif // DNCP_TYPEDEFS
 
 #ifdef __cplusplus
@@ -185,10 +211,12 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
         #define _In_
         #define _In_z_
         #define _In_opt_
+        #define _In_reads_bytes_(x)
         #define _Inout_
         #define _Out_
         #define _Out_opt_
         #define _Out_writes_to_opt_(x,y)
+        #define _Out_writes_bytes_to_(x, y)
         #define _Out_writes_to_(x,y)
         #define _COM_Outptr_
         #define __RPC_FAR
@@ -203,6 +231,7 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
         #define __RPC__out_ecount_part(x,y)
         #define __RPC__deref_out_ecount_full_opt(x)
         #define __RPC__deref_out_opt
+        #define __RPC__out
 
         // COM Interface definitions
         #define __uuidof(type) IID_##type
@@ -223,8 +252,9 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
         #include <unknwn.h>
 
         // Unusable COM and RPC types
+        struct tagSTATSTG;
+        using STATSTG = tagSTATSTG;
         interface ITypeInfo;
-        interface IStream;
         interface IDispatch;
         interface IRpcChannelBuffer;
         interface IRecordInfo;
@@ -236,6 +266,9 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
         using LPSTARTUPINFOW = SIZE_T;
         using LPPROCESS_INFORMATION = SIZE_T;
         using LPSECURITY_ATTRIBUTES = SIZE_T;
+
+        // Other COM interfaces
+        #include <objidl.h>
 
         // OLE VARIANT types
         typedef struct {
