@@ -218,6 +218,7 @@ HRESULT PAL_IIDFromString(LPCOLESTR, IID*);
         #define _Out_writes_to_opt_(x,y)
         #define _Out_writes_bytes_to_(x, y)
         #define _Out_writes_to_(x,y)
+        #define _Outptr_
         #define _COM_Outptr_
         #define __RPC_FAR
         #define __RPC_USER
