@@ -27,7 +27,9 @@ add_library(dncp
 
 add_library(dncp::dncp ALIAS dncp)
 
-set_target_properties(dncp PROPERTIES PUBLIC_HEADER inc/dncp.h)
+set_target_properties(dncp PROPERTIES
+  PUBLIC_HEADER inc/dncp.h
+  POSITION_INDEPENDENT_CODE ON)
 target_include_directories(
   dncp
   PUBLIC
